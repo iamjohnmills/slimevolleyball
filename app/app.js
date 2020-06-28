@@ -73,7 +73,6 @@ function handleOnlineGame(){
 
   document.getElementById('menu-top').classList.remove('hide');
 
-  document.getElementById('menu-bottom').classList.remove('hide');
 
   document.getElementById('room-input').addEventListener('keyup', function(event) {
     if(!this.value){
@@ -112,6 +111,8 @@ function startGame() {
   if( game.isPaused() ) return;
 
   if( online.ready() ){
+    document.getElementById('menu-bottom').classList.remove('hide');
+
     if( online.isRoomHost() ){
       slime_player.setSlimeMovement({ inputs: inputs.getClient() });
       socket.emit('game_from_client_host', { room_name: online.getRoomName(), ball: ball.getPosition(), slime: slime_player.getPosition() });
