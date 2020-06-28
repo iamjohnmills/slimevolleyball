@@ -1,0 +1,46 @@
+<html>
+<head>
+  <style type="text/css">
+  html,body { margin: 0; padding: 0; font-family: sans-serif; }
+  .container { position: relative; min-width: 750px; }
+  canvas { width: 100%; }
+  .hide { display: none !important; }
+  #menu-bottom { display: flex; align-items: center; position: absolute; top: 80%; left: 0; right: 0; bottom: 0; }
+  .chat { flex: 1 1; padding: 0 20px; }
+  .chat input { background: rgba(255,255,255,0.3); width: 100%; font-size: 22px;  }
+  input { background: rgba(255,255,255,0.4); text-align: center; color: #ffffff; display: block; font-size: 18px; outline: none; border: none; padding: 10px; border-radius: 8px; }
+  #menu-top { color: #ffffff; text-align: center; position: absolute; top: 0; left: 0; right: 0; padding: 50px 0; }
+  #set-room label { display: block; line-height: 1; cursor: pointer; font-weight: bold; font-size: 18px; margin-bottom: 10px;}
+  #set-room input { width: 400px; margin: 0 auto; }
+  #set-room input::placeholder { color: rgba(255,255,255,0.8); }
+  #room-status { padding-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="menu-top" class="hide">
+      <div id="set-room">
+        <input id="room-input" placeholder="Type a room name to play online" />
+      </div>
+      <div id="room-status"></div>
+    </div>
+    <canvas id="slime" width="750" height="375">Slime Volleyball</canvas>
+    <div id="menu-bottom" class="hide">
+      <div class="chat">
+        <input id="chat-input" autocomplete="off" placeholder="Type here to chat" type="text" />
+      </div>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app/Inputs.js"></script>
+  <script src="app/Game.js"></script>
+  <script src="app/Online.js"></script>
+  <script src="app/Slime.js"></script>
+  <script src="app/SlimeAI.js"></script>
+  <script src="app/SlimePlayer.js"></script>
+  <script src="app/PatheticWhiteSlime.js"></script>
+  <script src="app/Ball.js"></script>
+  <script src="app/Animate.js"></script>
+  <script src="app/app.js"></script>
+</body>
+</html>
