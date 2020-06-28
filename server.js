@@ -8,7 +8,7 @@ var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
 
-app.set('port', 5000);
+//app.set('port', 5000);
 app.use('/app', express.static(__dirname + '/app'));
 
 // Routing
