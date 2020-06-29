@@ -63,12 +63,18 @@ io.on('connection', function(socket) {
 
   socket.on('game_from_client_host', function(options) {
     if(typeof rooms[options.room_name] == 'undefined') return;
-    io.sockets.emit('game_from_server_host', { ball: options.ball, slime: options.slime });
+    var room = rooms[options.room_name];
+    if(options.client_id == room.client_id_host || options.client_id == room.client_id_opponent){
+      io.sockets.emit('game_from_server_host', { ball: options.ball, slime: options.slime });
+    }
   });
 
   socket.on('game_from_client_guest', function(options) {
     if(typeof rooms[options.room_name] == 'undefined') return;
-    io.sockets.emit('game_from_server_guest', { slime: options.slime });
+    var room = rooms[options.room_name];
+    if(options.client_id == room.client_id_host || options.client_id == room.client_id_opponent){
+      io.sockets.emit('game_from_server_guest', { slime: options.slime });
+    }
   });
 
 });
