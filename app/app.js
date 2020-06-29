@@ -70,8 +70,8 @@ function handleOnlineGame(){
   socket.on('game_from_server_host', function(options) {
     // set stuff for guest experience
     if(online.isRoomOpponent()){
-      ball.setPosition(options.ball);
-      slime_player.setPosition(options.slime);
+      ball.setPositionFromServer(options.ball);
+      slime_player.setPositionFromServer(options.slime);
       //animate.setReady(true);
     }
   });
@@ -79,7 +79,7 @@ function handleOnlineGame(){
   socket.on('game_from_server_guest', function(options) {
     // set stuff for host experience
     if(online.isRoomHost()){
-      slime_opponent.setPosition(options.slime);
+      slime_opponent.setPositionFromServer(options.slime);
       //animate.setReady(true);
     }
   });
@@ -145,6 +145,7 @@ function startGame() {
   slime_player.setSlime(); // move player slime
   slime_opponent.setSlime(); // move opponent slime
   ball.setBall(); // move ball
+
   ball.hitSlime(slime_player);
   ball.hitSlime(slime_opponent);
   ball.hitWall();

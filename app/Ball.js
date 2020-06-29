@@ -40,6 +40,20 @@ class Ball {
     this.xv = options.xv;
     this.yv = options.yv;
   }
+  setPositionFromServer(options){
+    if(options.x != this.x){
+      this.x = options.x;
+    }
+    if(options.y != this.y){
+      this.y = options.y;
+    }
+    if(options.xv != this.xv){
+      this.xv = options.xv;
+    }
+    if(options.yv != this.yv){
+      this.yv = options.yv;
+    }
+  }
   resetBall(player_to_serve){
     this.x = player_to_serve ? this.player.x : this.opponent.x;
     this.y = 356;
