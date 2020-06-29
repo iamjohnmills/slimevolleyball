@@ -49,7 +49,7 @@ class Game {
   setPointPlayer(){
     this.player_to_serve = true;
     this.score.player++;
-    if(this.score.opponent == this.score.max){
+    if(this.score.player == this.score.max){
       this.state = this.states.end;
     }
   }

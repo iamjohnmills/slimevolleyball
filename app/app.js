@@ -189,8 +189,6 @@ function init(){
     inputs.keyUp(e.code);
   });
 
-  //document.getElementById('menu-bottom').classList.remove('hide');
-
   online.init();
   animate.setCanvas({ canvas: document.getElementById('slime') });
   animate.arena({ score: game.getScore() });
