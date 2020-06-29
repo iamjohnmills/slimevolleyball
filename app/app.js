@@ -69,16 +69,15 @@ function handleOnlineGame(){
 
   socket.on('game_from_server', function(options) {
     if( options.client_id == online.getRoomOpponent() && online.isRoomHost() ){
-      if(options.ball.x > 500){
-        ball.setPosition(options.ball);
-      }
       slime_opponent.setPosition(options.slime_opponent);
-    } else if( options.client_id == online.getRoomHost() && online.isRoomOpponent() ){
-      if(options.ball.x < 500){
-        ball.setPosition(options.ball);
+      if(options.ball.x > 500){
+        ball.setPositionFromServer(options.ball);
       }
-      //ball.setPosition(options.ball);
+    } else if( options.client_id == online.getRoomHost() && online.isRoomOpponent() ){
       slime_player.setPosition(options.slime_player);
+      if(options.ball.x < 500){
+        ball.setPositionFromServer(options.ball);
+      }
     }
   });
 
