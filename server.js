@@ -36,6 +36,14 @@ io.on('connection', function(socket) {
     io.sockets.emit('room_removed', name);
   })
 
+  socket.on('chat_from_client', function(options) {
+    if(typeof rooms[options.room_name] == 'undefined') return;
+    var room = rooms[options.room_name];
+    if(options.client_id == room.client_id_host || options.client_id == room.client_id_opponent){
+      io.sockets.emit('chat_from_server', { client_id: options.client_id, message: options.message });
+    }
+  })
+
   socket.on('create_join_room', function(options) {
     if(typeof rooms[options.room_name] == 'undefined'){
       var room = {

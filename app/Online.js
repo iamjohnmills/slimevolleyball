@@ -20,6 +20,11 @@ class Online {
   init(){
     this.init_callback();
   }
+  reset(){
+    this.room.room_name = null;
+    this.room.client_id_host = null;
+    this.room.client_id_opponent = null;
+  }
   getIsOnline(){
     return this.socket_installed && this.is_online;
   }
@@ -34,6 +39,15 @@ class Online {
   }
   setClientID(options){
     this.client_id = options.client_id;
+  }
+  getClientIDOpponent(){
+    return this.room.client_id_opponent;
+  }
+  getRoomHost(){
+    return this.room.client_id_host;
+  }
+  getRoomOpponent(){
+    return this.room.client_id_opponent;
   }
   setClientDisconnected(options){
     if(options.client_id == this.room.client_id_host){

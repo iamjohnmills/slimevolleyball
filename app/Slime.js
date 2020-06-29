@@ -57,7 +57,7 @@ class Slime {
     this.chat.message = options.message;
     setTimeout(function(){
       this.chat.show = false;
-    }.bind(this),options.timeout)
+    }.bind(this),options.delay)
 
   }
 }

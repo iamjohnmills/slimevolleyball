@@ -29,8 +29,8 @@ function handleOnlineGame(){
   socket.on('opponent_joined', function(options) {
     online.setRoomOpponent({ client_id_opponent: options.client_id_opponent });
     if( online.isInRoom() ){
-      slime_opponent.setSlimeChat({message: 'I\'m ready', timeout: 2000 });
-      document.getElementById('room-status').innerHTML = 'Ready.';
+      slime_opponent.setSlimeChat({message: 'I\'m ready', delay: 2000 });
+      //document.getElementById('room-status').innerHTML = 'Ready.';
       slime_opponent = new SlimePlayer({ x: 800, color: 'Yellow', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
       game.start();
     }
@@ -39,27 +39,40 @@ function handleOnlineGame(){
   socket.on('client_disconnected', function(options) {
     online.setClientDisconnected({ client_id: options.client_id });
     if( online.isInRoom() ){
-      document.getElementById('room-status').innerHTML = '';
+      //document.getElementById('room-status').innerHTML = '';
+      //document.getElementById('room-input').value = '';
+      //online.reset();
+      document.getElementById('room-input').classList.remove('hide');
       document.getElementById('room-input').value = '';
-
-      game.resetGame();
+      document.getElementById('room-input').blur();
+      document.getElementById('chat-input').classList.add('hide');
+      game.resetGame({ delay: 700 });
       setupSlimes();
-      slime_opponent.setSlimeChat({message: 'Guy quit', timeout: 2000 });
+      slime_opponent.setSlimeChat({message: 'Player quit', delay: 2000 });
       game.start();
     }
     socket.emit('remove_room', online.getRoomName() );
   });
 
   socket.on('room_removed', function(name) {
-    online.removeRoom();
+    online.reset();
+    //online.removeRoom();
   });
+
+  socket.on('chat_from_server', function(options) {
+    if( options.client_id == online.getRoomHost() ){
+      slime_player.setSlimeChat({ message: options.message, delay: 2000 });
+    } else if( options.client_id == online.getRoomOpponent() ){
+      slime_opponent.setSlimeChat({ message: options.message, delay: 2000 });
+    }
+  })
 
   socket.on('game_from_server_host', function(options) {
     // set stuff for guest experience
     if(online.isRoomOpponent()){
       ball.setPosition(options.ball);
       slime_player.setPosition(options.slime);
-      animate.setReady(true);
+      //animate.setReady(true);
     }
   });
 
@@ -67,11 +80,11 @@ function handleOnlineGame(){
     // set stuff for host experience
     if(online.isRoomHost()){
       slime_opponent.setPosition(options.slime);
-      animate.setReady(true);
+      //animate.setReady(true);
     }
   });
 
-  document.getElementById('menu-top').classList.remove('hide');
+  document.getElementById('menu-bottom').classList.remove('hide');
 
 
   document.getElementById('room-input').addEventListener('keyup', function(event) {
@@ -87,7 +100,7 @@ function handleOnlineGame(){
 
   document.getElementById('chat-input').addEventListener('keyup', function(event) {
     if (event.keyCode === 13) { // press enter
-      slime_player.setSlimeChat({message: this.value, timeout: 2000 });
+      socket.emit('chat_from_client', { room_name: online.getRoomName(), message: this.value, client_id: online.getClientID() });
       this.value = '';
       this.blur();
     }
@@ -111,7 +124,9 @@ function startGame() {
   if( game.isPaused() ) return;
 
   if( online.ready() ){
-    document.getElementById('menu-bottom').classList.remove('hide');
+
+    document.getElementById('room-input').classList.add('hide');
+    document.getElementById('chat-input').classList.remove('hide');
 
     if( online.isRoomHost() ){
       slime_player.setSlimeMovement({ inputs: inputs.getClient() });
@@ -136,13 +151,22 @@ function startGame() {
   ball.hitNet();
   if(ball.hitFloor()){
     if(ball.x < 500){
-      slime_player.setSlimeChat({ message: 'AHHH!', timeout: 400 });
+      slime_player.setSlimeChat({ message: 'AHHH!', delay: 400 });
       game.setPointOpponent();
     } else if(ball.x > 500){
-      slime_opponent.setSlimeChat({ message: 'AHHH!', timeout: 400 });
+      slime_opponent.setSlimeChat({ message: 'AHHH!', delay: 400 });
       game.setPointPlayer();
     }
-    game.setPoint({ callback: setupGameRound });
+    if( game.getGameEnd() ){
+      if( game.getPlayerIsWinner() ){
+
+      } else {
+
+      }
+      game.setGameOver({ callback: setupGameRound, delay: 2000 });
+    } else {
+      game.setRoundOver({ callback: setupGameRound, delay: 400 });
+    }
   }
 
   requestAnimationFrame(function(){
@@ -150,6 +174,7 @@ function startGame() {
       ball: ball,
       slime_player: slime_player,
       slime_opponent: slime_opponent,
+      score: game.getScore(),
     });
   });
 }
@@ -164,9 +189,11 @@ function init(){
     inputs.keyUp(e.code);
   });
 
+  //document.getElementById('menu-bottom').classList.remove('hide');
+
   online.init();
   animate.setCanvas({ canvas: document.getElementById('slime') });
-  animate.arena();
+  animate.arena({ score: game.getScore() });
   setupSlimes();
   game.start();
 }

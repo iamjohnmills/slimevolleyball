@@ -33,17 +33,17 @@ class Animate {
     this.context = options.canvas.getContext("2d", {alpha: false});
   }
   game(options){
-    requestAnimationFrame
-    this.arena();
+    this.arena({ score: options.score });
     // Apply pixel densities and return canvas parameter values
     this.drawBall( this.applyPixelDensityToBall({ ball: options.ball }) );
     this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_player, ball: options.ball }) );
     this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_opponent, ball: options.ball }) );
   }
-  arena(){
+  arena(options){
     this.drawBackdrop();
     this.drawFloor();
     this.drawNet();
+    this.drawScores({ score: options.score });
   }
   drawBackdrop(){ // Backdrop
     this.context.fillStyle = this.backdrop.color;
@@ -149,6 +149,39 @@ class Animate {
     this.context.closePath();
     this.context.fillStyle = fill;
     //this.context.scale(2, 2);
+    this.context.fill();
+  }
+  drawScores(options){
+
+    var color;
+    for(var i = 1; i <= options.score.max; i++){
+      color = i <= options.score.player ? 'Yellow' : '#0000CF';
+      this.drawScore({ x: i * 20, y: 20, color: color });
+    }
+
+    for(var i = 1; i <= options.score.max; i++){
+      color = i > options.score.max - options.score.opponent ? 'Yellow' : '#0000CF';
+      this.drawScore({ x: 590 + i * 20, y: 20, color: color });
+    }
+
+    /*
+    this.context.beginPath();
+    this.context.rect(0,20, 15, 1);
+    this.context.fillStyle = "#000";
+    this.context.fill();
+
+    this.context.beginPath();
+    this.context.rect(this.backdrop.width-15,20, 15, 1);
+    this.context.fillStyle = "#000";
+    this.context.fill();
+    */
+
+
+  }
+  drawScore(options){
+    this.context.beginPath();
+    this.context.arc(options.x, options.y, 5, 0, this.two_pi);
+    this.context.fillStyle = options.color;
     this.context.fill();
   }
   applyPixelDensityToBall(options){ // apply pixel densities to ball
