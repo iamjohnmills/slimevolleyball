@@ -72,7 +72,7 @@ function handleOnlineGame(){
     if(online.isRoomOpponent()){
       ball.setPositionFromServer(options.ball);
       slime_player.setPositionFromServer(options.slime);
-      //animate.setReady(true);
+      //runGame();
     }
   });
 
@@ -80,7 +80,7 @@ function handleOnlineGame(){
     // set stuff for host experience
     if(online.isRoomHost()){
       slime_opponent.setPositionFromServer(options.slime);
-      //animate.setReady(true);
+      //runGame();
     }
   });
 
@@ -120,39 +120,14 @@ function setupGameRound(){
   game.setStateActive();
 }
 
-function startGame() {
-  if( game.isPaused() ) return;
-
-  if( online.ready() ){
-
-    document.getElementById('room-input').classList.add('hide');
-    document.getElementById('chat-input').classList.remove('hide');
-
-    if( online.isRoomHost() ){
-      slime_player.setSlimeMovement({ inputs: inputs.getClient() });
-      socket.emit('game_from_client_host', { client_id: online.getClientID(), room_name: online.getRoomName(), ball: ball.getPosition(), slime: slime_player.getPosition() });
-    } else if( online.isRoomOpponent() ){
-      slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
-      socket.emit('game_from_client_guest', { client_id: online.getClientID(), room_name: online.getRoomName(), slime: slime_opponent.getPosition() });
-    }
-  }
-
-  if( !online.ready() ){
-    slime_player.setSlimeMovement({ inputs: inputs.getClient() }); // set slime with keyboard inputs
-    slime_opponent.setSlimeMovement({ ball: ball, slime: slime_player }); // set slime with AI inputs
-  }
-
+function runGame(){
   slime_player.setSlime(); // move player slime
   slime_opponent.setSlime(); // move opponent slime
   ball.setBall(); // move ball
-
-  if(!online.ready() || online.isRoomHost()){
-    ball.hitSlime(slime_player);
-    ball.hitSlime(slime_opponent);
-    ball.hitWall();
-    ball.hitNet();
-  }
-
+  ball.hitSlime(slime_player);
+  ball.hitSlime(slime_opponent);
+  ball.hitWall();
+  ball.hitNet();
   if(ball.hitFloor()){
     if(ball.x < 500){
       slime_player.setSlimeChat({ message: 'AHHH!', delay: 400 });
@@ -163,16 +138,41 @@ function startGame() {
     }
     if( game.getGameEnd() ){
       if( game.getPlayerIsWinner() ){
-
       } else {
-
       }
       game.setGameOver({ callback: setupGameRound, delay: 2000 });
     } else {
       game.setRoundOver({ callback: setupGameRound, delay: 400 });
     }
   }
+}
 
+function setupOnlineGame(){
+  document.getElementById('room-input').classList.add('hide');
+  document.getElementById('chat-input').classList.remove('hide');
+  if( online.isRoomHost() ){
+    slime_player.setSlimeMovement({ inputs: inputs.getClient() });
+    socket.emit('game_from_client_host', { client_id: online.getClientID(), room_name: online.getRoomName(), ball: ball.getPosition(), slime: slime_player.getPosition() });
+  } else if( online.isRoomOpponent() ){
+    slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
+    socket.emit('game_from_client_guest', { client_id: online.getClientID(), room_name: online.getRoomName(), slime: slime_opponent.getPosition() });
+  }
+}
+
+function setupLocalGame(){
+  slime_player.setSlimeMovement({ inputs: inputs.getClient() }); // set slime with keyboard inputs
+  slime_opponent.setSlimeMovement({ ball: ball, slime: slime_player }); // set slime with AI inputs
+}
+
+function startGame() {
+  if( game.isPaused() ) return;
+  if( online.ready() ){
+    setupOnlineGame();
+    runGame();
+  } else {
+    setupLocalGame();
+    runGame();
+  }
   requestAnimationFrame(function(){
     animate.game({
       ball: ball,
