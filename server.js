@@ -28,6 +28,11 @@ var rooms = [];
 io.on('connection', function(socket) {
 
   socket.on('disconnect', function() {
+    for(var i in rooms){
+      if(socket.id == rooms[i].client_id_host || socket.id == rooms[i].client_id_opponent){
+        delete rooms[i];
+      }
+    }
     io.sockets.emit('client_disconnected', { client_id: socket.id });
   })
 

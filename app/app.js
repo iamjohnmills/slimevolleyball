@@ -46,17 +46,12 @@ function handleOnlineGame(){
       document.getElementById('room-input').value = '';
       document.getElementById('room-input').blur();
       document.getElementById('chat-input').classList.add('hide');
+      online.reset();
       game.resetGame({ delay: 700 });
       setupSlimes();
       slime_opponent.setSlimeChat({message: 'Player quit', delay: 2000 });
       game.start();
     }
-    socket.emit('remove_room', online.getRoomName() );
-  });
-
-  socket.on('room_removed', function(name) {
-    online.reset();
-    //online.removeRoom();
   });
 
   socket.on('chat_from_server', function(options) {
