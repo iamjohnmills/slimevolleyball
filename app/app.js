@@ -67,25 +67,22 @@ function handleOnlineGame(){
     }
   })
 
-  socket.on('game_from_server_host', function(options) {
-    // set stuff for guest experience
-    if(online.isRoomOpponent()){
-      ball.setPositionFromServer(options.ball);
-      slime_player.setPositionFromServer(options.slime);
-      //runGame();
-    }
-  });
-
-  socket.on('game_from_server_guest', function(options) {
-    // set stuff for host experience
-    if(online.isRoomHost()){
-      slime_opponent.setPositionFromServer(options.slime);
-      //runGame();
+  socket.on('game_from_server', function(options) {
+    if( options.client_id == online.getRoomOpponent() && online.isRoomHost() ){
+      if(options.ball.x > 500){
+        ball.setPosition(options.ball);
+      }
+      slime_opponent.setPosition(options.slime_opponent);
+    } else if( options.client_id == online.getRoomHost() && online.isRoomOpponent() ){
+      if(options.ball.x < 500){
+        ball.setPosition(options.ball);
+      }
+      //ball.setPosition(options.ball);
+      slime_player.setPosition(options.slime_player);
     }
   });
 
   document.getElementById('menu-bottom').classList.remove('hide');
-
 
   document.getElementById('room-input').addEventListener('keyup', function(event) {
     if(!this.value){
@@ -152,11 +149,10 @@ function setupOnlineGame(){
   document.getElementById('chat-input').classList.remove('hide');
   if( online.isRoomHost() ){
     slime_player.setSlimeMovement({ inputs: inputs.getClient() });
-    socket.emit('game_from_client_host', { client_id: online.getClientID(), room_name: online.getRoomName(), ball: ball.getPosition(), slime: slime_player.getPosition() });
   } else if( online.isRoomOpponent() ){
     slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
-    socket.emit('game_from_client_guest', { client_id: online.getClientID(), room_name: online.getRoomName(), slime: slime_opponent.getPosition() });
   }
+  socket.emit('game_from_client', { client_id: online.getClientID(), room_name: online.getRoomName(), ball: ball.getPosition(), slime_player: slime_player.getPosition(), slime_opponent: slime_opponent.getPosition() });
 }
 
 function setupLocalGame(){
