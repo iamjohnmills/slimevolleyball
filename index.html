@@ -14,17 +14,12 @@
   #set-room label { display: block; line-height: 1; cursor: pointer; font-weight: bold; font-size: 18px; margin-bottom: 10px;}
   #set-room input { width: 400px; margin: 0 auto; }
   #set-room input::placeholder { color: rgba(255,255,255,0.8); }
-  #room-status { padding-top: 10px; }
+  #room-status { padding-top: 10px; position: absolute; top: 30px; color: #ffffff; margin: 0 auto;  text-align: center; left: 0; right: 0; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div id="menu-top" class="hide">
-      <div id="set-room">
-        <!--<input id="room-input" placeholder="Type a room name to play online" />-->
-      </div>
-      <div id="room-status"></div>
-    </div>
+    <div id="room-status"></div>
     <canvas id="slime" width="750" height="375">Slime Volleyball</canvas>
     <div id="menu-bottom" class="hide">
       <div class="inputs">

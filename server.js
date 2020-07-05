@@ -31,9 +31,10 @@ io.on('connection', function(socket) {
     for(var i in rooms){
       if(socket.id == rooms[i].client_id_host || socket.id == rooms[i].client_id_opponent){
         delete rooms[i];
+        io.sockets.emit('client_disconnected', { client_id: socket.id });
+        return;
       }
     }
-    io.sockets.emit('client_disconnected', { client_id: socket.id });
   })
 
   socket.on('remove_room', function(name) {
@@ -50,6 +51,8 @@ io.on('connection', function(socket) {
   })
 
   socket.on('create_join_room', function(options) {
+
+    // Create room
     if(typeof rooms[options.room_name] == 'undefined'){
       var room = {
         room_name: options.room_name,
@@ -58,12 +61,23 @@ io.on('connection', function(socket) {
       }
       rooms[options.room_name] = room;
       io.sockets.emit('room_created', { room_name: options.room_name, client_id_host: options.client_id });
-    } else { // join room
-      if(!rooms[options.room_name].client_id_opponent){
-        rooms[options.room_name].client_id_opponent = options.client_id;
-        io.sockets.emit('opponent_joined', { client_id_opponent: options.client_id });
-      }
+      return;
     }
+
+    var room = rooms[options.room_name];
+    // Join room
+    if(!room.client_id_opponent){
+      rooms[options.room_name].client_id_opponent = options.client_id;
+      io.sockets.emit('opponent_joined', { client_id_opponent: options.client_id, client_id_host: room.client_id_host, room_name: options.room_name });
+      return;
+    }
+    // Room full
+    if(room.client_id_host && room.client_id_opponent){
+      io.sockets.emit('room_unavailable', { room_name: options.room_name, client_id: options.client_id });
+      return;
+    }
+
+
   });
 
   socket.on('game_from_client', function(options) {

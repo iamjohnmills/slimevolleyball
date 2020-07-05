@@ -1,4 +1,3 @@
-//var play_online = false;
 var slime_player;
 var slime_opponent;
 var game = new Game({ setup_game_round_callback: setupGameRound, interval: { callback: startGame, delay: 20 } });
@@ -7,9 +6,9 @@ var inputs = new Inputs();
 var ball = new Ball();
 
 var socket;
-var online = new Online({ socket_installed: typeof io == 'function', init_callback: handleOnlineGame });
+var online = new Online({ socket_installed: typeof io == 'function', init_callback: onlineInit });
 
-function handleOnlineGame(){
+function onlineInit(){
 
   if(!online.getIsOnline()) return;
 
@@ -19,19 +18,31 @@ function handleOnlineGame(){
     online.setClientID({ client_id: socket.id })
   });
 
+  socket.on('room_unavailable', function(options) {
+    if( online.getClientID() != options.client_id ) return;
+    document.getElementById('room-status').innerHTML = 'Room unavailable.';
+    setTimeout(function(){
+      document.getElementById('room-status').innerHTML = '';
+    },2000);
+  });
+
   socket.on('room_created', function(options) {
-    online.setRoomNameAndHost({ client_id_host: options.client_id_host, room_name: options.room_name })
-    if( online.isRoomHost() ){
-      document.getElementById('room-status').innerHTML = '...Waiting';
+    if( online.getClientID() == options.client_id_host){
+      online.setRoomNameAndHost({ client_id_host: options.client_id_host, room_name: options.room_name })
+      if( online.isRoomHost() ){
+        document.getElementById('room-status').innerHTML = '...';
+      }
     }
   });
 
   socket.on('opponent_joined', function(options) {
-    online.setRoomOpponent({ client_id_opponent: options.client_id_opponent });
-    if( online.isInRoom() ){
-      slime_opponent.setSlimeChat({message: 'I\'m ready', delay: 2000 });
-      //document.getElementById('room-status').innerHTML = 'Ready.';
+    if( online.getClientID() == options.client_id_opponent || online.getClientID() == options.client_id_host){
+      online.setRoom({ room_name: options.room_name, client_id_host: options.client_id_host, client_id_opponent: options.client_id_opponent });
+      //online.setRoomOpponent({ client_id_opponent: options.client_id_opponent });
+      //online.setRoomNameAndHost({ client_id_host: options.client_id_host, room_name: options.room_name })
       slime_opponent = new SlimePlayer({ x: 800, color: 'Yellow', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
+      document.getElementById('room-status').innerHTML = '';
+      slime_opponent.setSlimeChat({message: 'Yo', delay: 2000 });
       game.start();
     }
   });
@@ -39,9 +50,6 @@ function handleOnlineGame(){
   socket.on('client_disconnected', function(options) {
     online.setClientDisconnected({ client_id: options.client_id });
     if( online.isInRoom() ){
-      //document.getElementById('room-status').innerHTML = '';
-      //document.getElementById('room-input').value = '';
-      //online.reset();
       document.getElementById('room-input').classList.remove('hide');
       document.getElementById('room-input').value = '';
       document.getElementById('room-input').blur();

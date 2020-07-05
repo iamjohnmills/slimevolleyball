@@ -74,11 +74,16 @@ class Online {
   getRoomName(){
     return this.room.room_name;
   }
+  setRoom(options){
+    this.room.room_name = options.room_name;
+    this.room.client_id_host = options.client_id_host;
+    this.room.client_id_opponent = options.client_id_opponent;
+  }
   setRoomNameAndHost(options){
     this.room.room_name = options.room_name;
     this.room.client_id_host = options.client_id_host;
   }
-  setRoomOpponent(options){
-    this.room.client_id_opponent = options.client_id_opponent;
-  }
+  //setRoomOpponent(options){
+  //  this.room.client_id_opponent = options.client_id_opponent;
+  //}
 }
