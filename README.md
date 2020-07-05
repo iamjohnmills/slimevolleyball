@@ -13,7 +13,7 @@ Demo: https://slimevolleyballwithfriends.herokuapp.com/
 # About
 This is my contribution to the Slime Volleyball community. I wasted many hours of my life playing the original, and thought I'd waste some more making this.
 
-I set out to create a version of Slime Volleyball in native javascript that was as close the original as possible.
+I set out to create a version of Slime Volleyball in native javascript that was as close the original as possible, and ended up making something pretty close to that with a couple new features.
 
 I used object oriented principles to abstract and refactor everything from my starting point and inspiration: Jonathan Marler's version of Slime Volleyball. I integrated the online version using Node, Express and Socket.io.
 
