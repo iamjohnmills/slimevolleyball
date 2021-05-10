@@ -45,29 +45,29 @@ class Animate {
     this.drawNet();
     this.drawScores({ score: options.score });
   }
-  drawBackdrop(){ // Backdrop
+  drawBackdrop(){
     this.context.fillStyle = this.backdrop.color;
     this.context.fillRect(this.backdrop.x, this.backdrop.y, this.backdrop.width, this.backdrop.height);
   }
-  drawFloor(){ // Floor
+  drawFloor(){
     this.context.beginPath();
     this.context.rect(this.floor.x, this.floor.y, this.floor.width, this.floor.height);
     this.context.fillStyle = this.floor.color;
     this.context.fill();
   }
-  drawNet(){ // Net
+  drawNet(){
     this.context.beginPath();
     this.context.rect(this.net.x, this.net.y, this.net.width, this.net.height);
     this.context.fillStyle = this.net.color;
     this.context.fill();
   }
-  drawBall(ball){ // Ball
+  drawBall(ball){
     this.context.beginPath();
     this.context.arc(ball.x, ball.y, ball.radius, 0, this.two_pi);
     this.context.fillStyle = ball.color;
     this.context.fill();
   }
-  drawSlime(slime){ // Slime, Eye, Pupil
+  drawSlime(slime){
     this.drawSlimeChat(slime);
     this.context.beginPath();
     this.context.arc(slime.x, slime.y, slime.radius, this.pi, this.two_pi);
@@ -85,9 +85,7 @@ class Animate {
     this.context.setTransform(1,0,0,1,0,0);
   }
   drawSlimeChat(slime){
-
     if(!slime.chat.show) return;
-
     this.context.font = '16px Arial';
     var x = slime.x;
     var y = slime.y - slime.radius - 20;
@@ -109,7 +107,6 @@ class Animate {
         }
     }
     lines.push(currentLine);
-
     x = slime.chat.location == 'left' ? x + 40 : slime.x - biggest_line_width - 40;
     var message_height = line_height * lines.length;
     var y_height = y - message_height;
@@ -148,35 +145,18 @@ class Animate {
     this.context.quadraticCurveTo(x, y, x + radius.tl, y);
     this.context.closePath();
     this.context.fillStyle = fill;
-    //this.context.scale(2, 2);
     this.context.fill();
   }
   drawScores(options){
-
     var color;
     for(var i = 1; i <= options.score.max; i++){
       color = i <= options.score.player ? 'Yellow' : '#0000CF';
       this.drawScore({ x: i * 20, y: 20, color: color });
     }
-
     for(var i = 1; i <= options.score.max; i++){
       color = i > options.score.max - options.score.opponent ? 'Yellow' : '#0000CF';
       this.drawScore({ x: 590 + i * 20, y: 20, color: color });
     }
-
-    /*
-    this.context.beginPath();
-    this.context.rect(0,20, 15, 1);
-    this.context.fillStyle = "#000";
-    this.context.fill();
-
-    this.context.beginPath();
-    this.context.rect(this.backdrop.width-15,20, 15, 1);
-    this.context.fillStyle = "#000";
-    this.context.fill();
-    */
-
-
   }
   drawScore(options){
     this.context.beginPath();

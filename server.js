@@ -76,8 +76,6 @@ io.on('connection', function(socket) {
       io.sockets.emit('room_unavailable', { room_name: options.room_name, client_id: options.client_id });
       return;
     }
-
-
   });
 
   socket.on('game_from_client', function(options) {
@@ -87,22 +85,4 @@ io.on('connection', function(socket) {
       io.sockets.emit('game_from_server', { client_id: options.client_id, ball: options.ball, slime_player: options.slime_player, slime_opponent: options.slime_opponent });
     }
   });
-  /*
-  socket.on('game_from_client_host', function(options) {
-    if(typeof rooms[options.room_name] == 'undefined') return;
-    var room = rooms[options.room_name];
-    if(options.client_id == room.client_id_host || options.client_id == room.client_id_opponent){
-      io.sockets.emit('game_from_server_host', { ball: options.ball, slime: options.slime });
-    }
-  });
-
-  socket.on('game_from_client_guest', function(options) {
-    if(typeof rooms[options.room_name] == 'undefined') return;
-    var room = rooms[options.room_name];
-    if(options.client_id == room.client_id_host || options.client_id == room.client_id_opponent){
-      io.sockets.emit('game_from_server_guest', { slime: options.slime });
-    }
-  });
-  */
-
 });

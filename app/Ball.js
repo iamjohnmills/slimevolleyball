@@ -1,14 +1,14 @@
 class Ball {
   constructor() {
-    this.x = 0, // Position X
-    this.y = 0, // Position Y
-    this.xv = 0, // Velocity X
-    this.yv = 0, // Velocity Y
-    this.xv_max = 15, // Max Velocity X
-    this.yv_max = 22, // Max Velocity Y
-    this.gravity = 1,
-    this.color = 'Yellow',
-    this.radius = 30,
+    this.x = 0; // Position X
+    this.y = 0; // Position Y
+    this.xv = 0; // Velocity X
+    this.yv = 0; // Velocity Y
+    this.xv_max = 15; // Max Velocity X
+    this.yv_max = 22; // Max Velocity Y
+    this.gravity = 1;
+    this.color = 'Yellow';
+    this.radius = 30;
     this.bounds = {
       collision_padding: 5,
       net_left: 482,
@@ -16,15 +16,15 @@ class Ball {
       net_top: 132,
       wall_left: 15,
       wall_right: 985,
-    },
+    };
     this.player = {
       x: 202,
       y: 50,
-    },
+    };
     this.opponent = {
       x: 800,
       y: 50
-    }
+    };
   }
   getPosition(){
     return {
@@ -100,8 +100,6 @@ class Ball {
     }
   }
   hitSlime(slime) {
-    // A bunch of math I don't understand
-    // ...circle intersections I guess
     var dx = 2 * (this.x - slime.x);
     var dy = this.y - slime.y;
     var dist = Math.trunc(Math.sqrt(dx * dx + dy * dy));
