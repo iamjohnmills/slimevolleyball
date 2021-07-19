@@ -1,9 +1,13 @@
 var slime_player;
 var slime_opponent;
-var game = new Game({ setup_game_round_callback: setupGameRound, interval: { callback: startGame, delay: 20 } });
 var animate = new Animate({ width: 750, height: 375, pi: Math.PI });
 var inputs = new Inputs();
 var ball = new Ball();
+var water = new Water();
+var game = new Game({
+  setup_game_round_callback: setupGameRound,
+  interval: { callback: startGame, delay: 20 },
+ });
 
 var socket;
 var online = new Online({ socket_installed: typeof io == 'function', init_callback: onlineInit });
@@ -119,14 +123,16 @@ function setupGameRound(){
   game.setStateActive();
 }
 
-function runGame(){
-  slime_player.setSlime(); // move player slime
-  slime_opponent.setSlime(); // move opponent slime
-  ball.setBall(); // move ball
-  ball.hitSlime(slime_player);
-  ball.hitSlime(slime_opponent);
-  ball.hitWall();
-  ball.hitNet();
+async function runGame(){
+  await slime_player.setSlime(); // move player slime
+  await slime_opponent.setSlime(); // move opponent slime
+  await water.splashSlime(slime_player);
+  await water.splashSlime(slime_opponent);
+  await ball.setBall(); // move ball
+  await ball.hitSlime(slime_player);
+  await ball.hitSlime(slime_opponent);
+  await ball.hitWall();
+  await ball.hitNet();
   if(ball.hitFloor()){
     if(ball.x < 500){
       slime_player.setSlimeChat({ message: 'AHHH!', delay: 400 });
@@ -171,12 +177,13 @@ function startGame() {
     setupLocalGame();
     runGame();
   }
-  requestAnimationFrame(function(){
-    animate.game({
+  requestAnimationFrame(async function(){
+    await animate.game({
       ball: ball,
       slime_player: slime_player,
       slime_opponent: slime_opponent,
       score: game.getScore(),
+      water: { particles: await water.getParticles() }
     });
   });
 }

@@ -15,7 +15,7 @@ class Animate {
       height: options.height - 75,
     }
     this.floor = {
-      color: '#919191',
+      color: '#3F00FF',
       x: 0,
       y: options.height - 75,
       width: options.width,
@@ -28,22 +28,31 @@ class Animate {
       width: 4,
       height: 40,
     }
+    this.water = {
+      color: "#1434A4",
+      width: 750,
+      height: 375,
+    }
   }
   setCanvas(options){
     this.context = options.canvas.getContext("2d", {alpha: false});
   }
   game(options){
-    this.arena({ score: options.score });
+    //this.arena({ score: options.score, water: options.water });
     // Apply pixel densities and return canvas parameter values
-    this.drawBall( this.applyPixelDensityToBall({ ball: options.ball }) );
+    this.drawBackdrop();
+    //this.drawFloor();
+
     this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_player, ball: options.ball }) );
     this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_opponent, ball: options.ball }) );
-  }
-  arena(options){
-    this.drawBackdrop();
-    this.drawFloor();
+    if(options.water){
+      this.drawWater({ particles: options.water.particles })
+    }
+    this.drawBall( this.applyPixelDensityToBall({ ball: options.ball }) );
     this.drawNet();
     this.drawScores({ score: options.score });
+  }
+  arena(options){
   }
   drawBackdrop(){
     this.context.fillStyle = this.backdrop.color;
@@ -163,6 +172,25 @@ class Animate {
     this.context.arc(options.x, options.y, 5, 0, this.two_pi);
     this.context.fillStyle = options.color;
     this.context.fill();
+  }
+  drawWater(options){
+			//this.context.rect(0, 0, this.water.width, this.water.height);
+			this.context.fillStyle = this.water.color;
+			this.context.beginPath();
+      options.particles.forEach( (particle,i,particles) => {
+				if(i === 0) {
+					this.context.moveTo((particle.xpos * this.pixel_density.x) + ((particles[i+1].xpos * this.pixel_density.x) - (particle.xpos * this.pixel_density.x)) / 2, (particle.ypos * this.pixel_density.y) + ((particles[i+1].ypos * this.pixel_density.y) - (particle.ypos * this.pixel_density.y)) / 2);
+				} else if(i < particles.length-1) {
+					this.context.quadraticCurveTo((particle.xpos * this.pixel_density.x), (particle.ypos * this.pixel_density.y), (particle.xpos * this.pixel_density.x) + ((particles[i+1].xpos * this.pixel_density.x) - (particle.xpos * this.pixel_density.x)) / 2, (particle.ypos * this.pixel_density.y) + ((particles[i+1].ypos * this.pixel_density.y) - (particle.ypos * this.pixel_density.y)) / 2);
+				}
+				particle.x = particle.xpos;
+				particle.y = particle.ypos;
+      })
+			this.context.lineTo(this.water.width, this.water.height);
+			this.context.lineTo(0, this.water.height);
+			this.context.lineTo(0, this.water.height / 2);
+			this.context.closePath();
+			this.context.fill();
   }
   applyPixelDensityToBall(options){ // apply pixel densities to ball
     return {

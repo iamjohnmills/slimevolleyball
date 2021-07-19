@@ -5,16 +5,18 @@
   html,body { margin: 0; padding: 0; font-family: sans-serif; }
   body > div { display: flex; justify-content: center; align-items: center; height: 100%;}
   .container { position: relative; min-width: 750px; }
-  canvas { width: 100%; }
+  canvas { width: 100%; border-radius: 8px; }
   .hide { display: none !important; }
   #menu-bottom { display: flex; align-items: center; position: absolute; top: 80%; left: 0; right: 0; bottom: 0; }
   .inputs { flex: 1 1; padding: 0 20px; }
-  .inputs input { background: rgba(255,255,255,0.3); width: 100%; font-size: 22px;  }
-  input { background: rgba(255,255,255,0.4); text-align: center; color: #ffffff; display: block; font-size: 18px; outline: none; border: none; padding: 10px; border-radius: 8px; }
+  .inputs input { background: transparent; width: 100%; font-size: 18px;  }
+  input::placeholder { color: rgba(255,255,255,0.3); }
+
+  input { background: transparent; color: rgba(255,255,255,0.3); border: 0; text-align: center; display: block; font-size: 18px; outline: none; padding: 10px; border-radius: 8px; }
   #menu-top { color: #ffffff; text-align: center; position: absolute; top: 0; left: 0; right: 0; padding: 50px 0; }
   #set-room label { display: block; line-height: 1; cursor: pointer; font-weight: bold; font-size: 18px; margin-bottom: 10px;}
   #set-room input { width: 400px; margin: 0 auto; }
-  #set-room input::placeholder { color: rgba(255,255,255,0.8); }
+  #set-room input::placeholder { color: #fff; }
   #room-status { padding-top: 10px; position: absolute; top: 30px; color: #ffffff; margin: 0 auto;  text-align: center; left: 0; right: 0; }
   </style>
 </head>
@@ -40,6 +42,7 @@
   <script src="app/SlimePlayer.js"></script>
   <script src="app/PatheticWhiteSlime.js"></script>
   <script src="app/Ball.js"></script>
+  <script src="app/Water.js"></script>
   <script src="app/Animate.js"></script>
   <script src="app/app.js"></script>
 </body>
