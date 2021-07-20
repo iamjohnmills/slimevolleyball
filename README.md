@@ -2,7 +2,7 @@
 
 Go old skool with Pathetic White Slime or play online with a friend.
 
-[![Play Online](https://raw.githubusercontent.com/iamjohnmills/slimevolleyball/master/screenshot.png)](https://slimevolleyballwithfriends.herokuapp.com/)
+[![Play Online](https://raw.githubusercontent.com/iamjohnmills/slimevolleyball/master/screenshot.gif)](https://slimevolleyballwithfriends.herokuapp.com/)
 
 ## Features
 Enter a room name to host a game, then have a friend enter the room name to start the match. You can also chat.
