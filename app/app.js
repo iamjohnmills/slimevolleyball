@@ -1,6 +1,54 @@
 var slime_player;
 var slime_opponent;
-var animate = new Animate({ width: 750, height: 375, pi: Math.PI });
+
+const themes = {
+  classic: {
+    mode: 'fill',
+    ball: '#FFFF00',
+    background: ['#0000FF','#0000FF'],
+    water: 'rgba(0, 150, 255,0.8)',
+    net: '#FFFFFF',
+    score: {
+      inactive: "#0000CF",
+      active: "#FFFF00",
+    },
+    slime_player: {
+      body: '#FFFF00',
+      eye: '#FFFFFF',
+      pupil: '#000000'
+    },
+    slime_opponent: {
+      body: '#FFFFFF',
+      eye: '#FFFFFF',
+      pupil: '#000000'
+    },
+  },
+  sunset: {
+    mode: 'fill',
+    ball: '#FFFF00',
+    background: ['#ff5f6d','#ff5f6d'],
+    water: 'rgba(199, 0, 57 ,0.6)',
+    net: '#FFFFFF',
+    score: {
+      inactive: "#C70039",
+      active: "#FFFF00",
+    },
+    slime_player: {
+      body: '#FFFF00',
+      eye: '#FFFFFF',
+      pupil: '#000000'
+    },
+    slime_opponent: {
+      body: '#FFFFFF',
+      eye: '#FFFFFF',
+      pupil: '#000000'
+    },
+  },
+}
+
+let active_theme = themes.classic;
+
+var animate = new Animate({ theme: active_theme, width: 750, height: 375, pi: Math.PI });
 var inputs = new Inputs();
 var ball = new Ball();
 var water = new Water();
@@ -41,7 +89,7 @@ function onlineInit(){
       online.setRoom({ room_name: options.room_name, client_id_host: options.client_id_host, client_id_opponent: options.client_id_opponent });
       //online.setRoomOpponent({ client_id_opponent: options.client_id_opponent });
       //online.setRoomNameAndHost({ client_id_host: options.client_id_host, room_name: options.room_name })
-      slime_opponent = new SlimePlayer({ x: 800, color: 'Yellow', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
+      slime_opponent = new SlimePlayer({ x: 800, is_player: false, color: 'Yellow', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
       document.getElementById('room-status').innerHTML = '';
       slime_opponent.setSlimeChat({message: 'Yo', delay: 2000 });
       game.start();
@@ -123,8 +171,9 @@ function setupOnlineGame(){
 
 
 function setupSlimes(){
-  slime_player = new SlimePlayer({ x: 202, color: 'Yellow', eye_location: 'right', chat: { location: 'left' }, radius: 100, left: 50, right: 445 });
-  slime_opponent = new PatheticWhiteSlime({ x: 800, color: '#FFFFFF', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
+  slime_player = new SlimePlayer({ x: 202, is_player: true, color: 'Yellow', eye_location: 'right', chat: { location: 'left' }, radius: 100, left: 50, right: 445 });
+  slime_opponent = new PatheticWhiteSlime({ x: 800, is_player: false, color: '#FFFFFF', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
+  console.log(slime_player)
 }
 
 function setupGameRound(){
@@ -171,7 +220,7 @@ function setupLocalGame(){
   slime_opponent.setSlimeMovement({ ball: ball, slime: slime_player }); // set slime with AI inputs
 }
 
-function startGame() {
+async function startGame() {
   if( game.isPaused() ) return;
   if( online.ready() ){
     setupOnlineGame();
@@ -180,7 +229,7 @@ function startGame() {
     setupLocalGame();
     runGame();
   }
-  requestAnimationFrame(async function(){
+  //requestAnimationFrame(async function(){
     await animate.game({
       ball: ball,
       slime_player: slime_player,
@@ -188,7 +237,7 @@ function startGame() {
       score: game.getScore(),
       water: { particles: await water.getParticles() }
     });
-  });
+  //});
 }
 
 function init(){

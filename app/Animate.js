@@ -1,5 +1,7 @@
 class Animate {
   constructor(options) {
+    this.theme = options.theme;
+    console.log(this.theme)
     this.context = null;
     this.pi = options.pi;
     this.two_pi = options.pi * 2;
@@ -8,14 +10,14 @@ class Animate {
       y: options.height / 1000,
     }
     this.backdrop = {
-      color: 'Blue',
+      color: '#0000FF',
       x: 0,
       y: 0,
       width: options.width,
       height: options.height - 75,
     }
     this.floor = {
-      color: 'Blue',
+      color: '#0000FF',
       x: 0,
       y: options.height - 75,
       width: options.width,
@@ -29,7 +31,7 @@ class Animate {
       height: 40,
     }
     this.water = {
-      color: "rgba(0, 150, 255,0.8)", //#0096FF
+      color: "rgba(0, 150, 255,0.8)", //#0, 150, 255,0.8
       width: 750,
       height: 375,
     }
@@ -38,7 +40,6 @@ class Animate {
     this.context = options.canvas.getContext("2d", {alpha: false});
   }
   game(options){
-    // Apply pixel densities and return canvas parameter values
     this.drawBackdrop();
     this.drawFloor()
 
@@ -65,45 +66,49 @@ class Animate {
     this.drawScores({ score: options.score });
   }
   drawBackdrop(){
-    this.context.fillStyle = this.backdrop.color;
+    //this.context.fillStyle = this.backdrop.color;
+    const gradient = this.context.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, this.theme.background[0]);
+    gradient.addColorStop(1, this.theme.background[1]);
+    this.context.fillStyle = gradient;
     this.context.fillRect(this.backdrop.x, this.backdrop.y, this.backdrop.width, this.backdrop.height);
   }
   drawFloor(){
     this.context.beginPath();
     this.context.rect(this.floor.x, this.floor.y, this.floor.width, this.floor.height);
-    this.context.fillStyle = this.floor.color;
+    this.context.fillStyle = this.theme.background[1];
     this.context.fill();
   }
   drawNet(){
     this.context.beginPath();
     this.context.rect(this.net.x, this.net.y, this.net.width, this.net.height);
-    this.context.fillStyle = this.net.color;
+    this.context.fillStyle = this.theme.net;
     this.context.fill();
   }
   drawBall(ball){
     this.context.beginPath();
     this.context.arc(ball.x, ball.y, ball.radius, 0, this.two_pi);
-    this.context.fillStyle = ball.color;
+    this.context.fillStyle = this.theme.ball;
     this.context.fill();
   }
   drawSlime(slime){
     this.drawSlimeChat(slime);
     this.context.beginPath();
     this.context.arc(slime.x, slime.y, slime.radius, this.pi, this.two_pi);
-    this.context.fillStyle = slime.color;
+    this.context.fillStyle = slime.is_player ? this.theme.slime_player.body : this.theme.slime_opponent.body;
     this.context.fill();
     this.context.beginPath();
     this.context.ellipse(slime.x, slime.y, slime.radius,slime.radius / 5,0,0, this.two_pi);
-    this.context.fillStyle = slime.color;
+    this.context.fillStyle = slime.is_player ? this.theme.slime_player.body : this.theme.slime_opponent.body;
     this.context.fill();
     this.context.translate(slime.eye.translate.x, slime.eye.translate.y);
     this.context.beginPath();
     this.context.arc(slime.eye.x, slime.eye.y, slime.eye.radius, 0, this.two_pi);
-    this.context.fillStyle = '#fff';
+    this.context.fillStyle = slime.is_player ? this.theme.slime_player.eye : this.theme.slime_opponent.eye;
     this.context.fill();
     this.context.beginPath();
     this.context.arc(slime.pupil.x, slime.pupil.y, slime.pupil.radius, 0, this.two_pi);
-    this.context.fillStyle = '#000';
+    this.context.fillStyle = slime.is_player ? this.theme.slime_player.pupil : this.theme.slime_opponent.pupil;
     this.context.fill();
     this.context.setTransform(1,0,0,1,0,0);
   }
@@ -173,11 +178,11 @@ class Animate {
   drawScores(options){
     var color;
     for(var i = 1; i <= options.score.max; i++){
-      color = i <= options.score.player ? 'Yellow' : '#0000CF';
+      color = i <= options.score.player ? this.theme.score.active : this.theme.score.inactive;
       this.drawScore({ x: i * 20, y: 20, color: color });
     }
     for(var i = 1; i <= options.score.max; i++){
-      color = i > options.score.max - options.score.opponent ? 'Yellow' : '#0000CF';
+      color = i > options.score.max - options.score.opponent ? this.theme.score.active : this.theme.score.inactive;
       this.drawScore({ x: 590 + i * 20, y: 20, color: color });
     }
   }
@@ -189,7 +194,7 @@ class Animate {
   }
   drawWater(options){
       // this.context.globalCompositeOperation = 'multiply';
-			this.context.fillStyle = this.water.color;
+			this.context.fillStyle = this.theme.water;
 			this.context.beginPath();
       options.particles.forEach( (particle,i,particles) => {
 				if(i === 0) {
@@ -216,7 +221,6 @@ class Animate {
     }
   }
   applyPixelDensityToSlime(options){ // generate eyes and apply pixel densities to slime
-    // More math I don't understand for the eye and pupils
     // Slime
     var aa = options.slime.x * this.pixel_density.x;
     var ab = this.backdrop.height - (options.slime.y * this.pixel_density.y);
@@ -237,6 +241,7 @@ class Animate {
     return {
       x: aa,
       y: ab,
+      is_player: options.slime.is_player,
       color: options.slime.color,
       chat: options.slime.chat,
       radius: ac,
