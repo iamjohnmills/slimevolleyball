@@ -29,7 +29,7 @@ class Animate {
       height: 40,
     }
     this.water = {
-      color: "#1434A4",
+      color: "#0096FF",
       width: 750,
       height: 375,
     }
@@ -188,7 +188,7 @@ class Animate {
     this.context.fill();
   }
   drawWater(options){
-			//this.context.rect(0, 0, this.water.width, this.water.height);
+      // this.context.globalCompositeOperation = 'multiply';
 			this.context.fillStyle = this.water.color;
 			this.context.beginPath();
       options.particles.forEach( (particle,i,particles) => {
@@ -205,6 +205,7 @@ class Animate {
 			this.context.lineTo(0, this.water.height / 2);
 			this.context.closePath();
 			this.context.fill();
+
   }
   applyPixelDensityToBall(options){ // apply pixel densities to ball
     return {
