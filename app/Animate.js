@@ -15,7 +15,7 @@ class Animate {
       height: options.height - 75,
     }
     this.floor = {
-      color: '#3F00FF',
+      color: 'Blue',
       x: 0,
       y: options.height - 75,
       width: options.width,
@@ -29,7 +29,7 @@ class Animate {
       height: 40,
     }
     this.water = {
-      color: "#0096FF",
+      color: "rgba(0, 150, 255,0.8)", //#0096FF
       width: 750,
       height: 375,
     }

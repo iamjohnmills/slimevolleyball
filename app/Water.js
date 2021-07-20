@@ -10,10 +10,7 @@ class Water {
   	this.springs = []
   	this.width = 1000
   	this.height = 750
-    this.mouseY = 320
     this.directionY = 'up'
-    this.mouseX = 255
-    this.directionX = 'right'
     this.createWater()
   }
   getParticles(){
@@ -42,13 +39,6 @@ class Water {
   async moveWater(x,y,xv,yv) {
     //x = x - 50
     y = y + 750
-    if(this.directionY == 'up'){
-      this.mouseY = this.mouseY + 3;
-      this.directionY = this.mouseY >= 350 ? 'down' : 'up';
-    } else {
-      this.mouseY = this.mouseY - 5
-      this.directionY = this.mouseY <= 0 ? 'up' : 'down';
-    }
     const target = await this.particles.reduce( (target_obj, particle, i) => {
 			var dx = x - particle.x;
 			var dy = y - particle.y;

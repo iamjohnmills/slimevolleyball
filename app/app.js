@@ -198,7 +198,6 @@ function init(){
   document.addEventListener('keyup',function(e){
     inputs.keyUp(e.code);
   });
-
   online.init();
   animate.setCanvas({ canvas: document.getElementById('slime') });
   animate.game({ score: game.getScore() });
