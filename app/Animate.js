@@ -38,10 +38,8 @@ class Animate {
     this.context = options.canvas.getContext("2d", {alpha: false});
   }
   game(options){
-    //this.arena({ score: options.score, water: options.water });
     // Apply pixel densities and return canvas parameter values
     this.drawBackdrop();
-    //this.drawFloor();
 
     this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_player, ball: options.ball }) );
     this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_opponent, ball: options.ball }) );
@@ -53,6 +51,10 @@ class Animate {
     this.drawScores({ score: options.score });
   }
   arena(options){
+    this.drawBackdrop();
+    this.drawBall( this.applyPixelDensityToBall({ ball: options.ball }) );
+    this.drawNet();
+    this.drawScores({ score: options.score });
   }
   drawBackdrop(){
     this.context.fillStyle = this.backdrop.color;
