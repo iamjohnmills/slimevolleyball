@@ -1,5 +1,6 @@
 // Dependencies
 var express = require('express');
+const serveStatic = require('serve-static')
 var http = require('http');
 var path = require('path');
 var socketIO = require('socket.io');
@@ -13,9 +14,11 @@ const PORT = process.env.PORT || 5000;
 app.set('port', PORT);
 app.use('/app', express.static(__dirname + '/app'));
 
+app.use('/', serveStatic(path.join(__dirname, '/static')))
+
 // Routing
 app.get('/', function(request, response) {
-  response.sendFile(path.join(__dirname, 'index.html'));
+  response.sendFile(path.join(__dirname, '/static/index.html'));
 });
 
 // Starts the server.
