@@ -33,8 +33,6 @@ class Animate {
       width: 750,
       height: 375,
     }
-    this.center_x = options.width / 2
-    this.center_y = options.height / 2
   }
   setCanvas(options){
     this.context = options.canvas.getContext("2d", {alpha: false});
@@ -50,13 +48,14 @@ class Animate {
     if(options.slime_opponent){
       this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_opponent, ball: options.ball }) );
     }
-    if(options.water){
-      this.drawWater({ particles: options.water.particles })
-    }
+    this.drawNet();
     if(options.ball){
       this.drawBall( this.applyPixelDensityToBall({ ball: options.ball }) );
     }
-    this.drawNet();
+
+    if(options.water){
+      this.drawWater({ particles: options.water.particles })
+    }
     this.drawScores({ score: options.score });
   }
   arena(options){
