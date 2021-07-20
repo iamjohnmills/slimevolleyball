@@ -200,7 +200,7 @@ function init(){
 
   online.init();
   animate.setCanvas({ canvas: document.getElementById('slime') });
-  animate.arena({ score: game.getScore() });
+  animate.game({ score: game.getScore() });
   setupSlimes();
   game.start();
 }

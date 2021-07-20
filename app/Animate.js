@@ -41,12 +41,18 @@ class Animate {
     // Apply pixel densities and return canvas parameter values
     this.drawBackdrop();
 
-    this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_player, ball: options.ball }) );
-    this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_opponent, ball: options.ball }) );
+    if(options.slime_player){
+      this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_player, ball: options.ball }) );
+    }
+    if(options.slime_opponent){
+      this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_opponent, ball: options.ball }) );
+    }
     if(options.water){
       this.drawWater({ particles: options.water.particles })
     }
-    this.drawBall( this.applyPixelDensityToBall({ ball: options.ball }) );
+    if(options.ball){
+      this.drawBall( this.applyPixelDensityToBall({ ball: options.ball }) );
+    }
     this.drawNet();
     this.drawScores({ score: options.score });
   }
