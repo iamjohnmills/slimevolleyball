@@ -4,13 +4,10 @@ var animate = new Animate({ width: 750, height: 375, pi: Math.PI });
 var inputs = new Inputs();
 var ball = new Ball();
 var water = new Water();
-var game = new Game({
-  setup_game_round_callback: setupGameRound,
-  interval: { callback: startGame, delay: 20 },
- });
+var game = new Game({ setup_game_round_callback: setupGameRound, interval: { callback: startGame, delay: 20 } });
+var online = new Online({ socket_installed: typeof io == 'function', init_callback: onlineInit });
 
 var socket;
-var online = new Online({ socket_installed: typeof io == 'function', init_callback: onlineInit });
 
 function onlineInit(){
 
@@ -111,6 +108,20 @@ function onlineInit(){
 
 }
 
+function setupOnlineGame(){
+  document.getElementById('room-input').classList.add('hide');
+  document.getElementById('chat-input').classList.remove('hide');
+  if( online.isRoomHost() ){
+    slime_player.setSlimeMovement({ inputs: inputs.getClient() });
+  } else if( online.isRoomOpponent() ){
+    slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
+  }
+  socket.emit('game_from_client', { client_id: online.getClientID(), room_name: online.getRoomName(), ball: ball.getPosition(), slime_player: slime_player.getPosition(), slime_opponent: slime_opponent.getPosition() });
+}
+
+
+
+
 function setupSlimes(){
   slime_player = new SlimePlayer({ x: 202, color: 'Yellow', eye_location: 'right', chat: { location: 'left' }, radius: 100, left: 50, right: 445 });
   slime_opponent = new PatheticWhiteSlime({ x: 800, color: '#FFFFFF', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
@@ -153,16 +164,7 @@ async function runGame(){
   }
 }
 
-function setupOnlineGame(){
-  document.getElementById('room-input').classList.add('hide');
-  document.getElementById('chat-input').classList.remove('hide');
-  if( online.isRoomHost() ){
-    slime_player.setSlimeMovement({ inputs: inputs.getClient() });
-  } else if( online.isRoomOpponent() ){
-    slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
-  }
-  socket.emit('game_from_client', { client_id: online.getClientID(), room_name: online.getRoomName(), ball: ball.getPosition(), slime_player: slime_player.getPosition(), slime_opponent: slime_opponent.getPosition() });
-}
+
 
 function setupLocalGame(){
   slime_player.setSlimeMovement({ inputs: inputs.getClient() }); // set slime with keyboard inputs
