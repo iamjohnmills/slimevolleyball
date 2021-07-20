@@ -173,7 +173,6 @@ function setupOnlineGame(){
 function setupSlimes(){
   slime_player = new SlimePlayer({ x: 202, is_player: true, color: 'Yellow', eye_location: 'right', chat: { location: 'left' }, radius: 100, left: 50, right: 445 });
   slime_opponent = new PatheticWhiteSlime({ x: 800, is_player: false, color: '#FFFFFF', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
-  console.log(slime_player)
 }
 
 function setupGameRound(){
@@ -229,7 +228,7 @@ async function startGame() {
     setupLocalGame();
     runGame();
   }
-  //requestAnimationFrame(async function(){
+  requestAnimationFrame(async function(){
     await animate.game({
       ball: ball,
       slime_player: slime_player,
@@ -237,7 +236,7 @@ async function startGame() {
       score: game.getScore(),
       water: { particles: await water.getParticles() }
     });
-  //});
+  });
 }
 
 function init(){

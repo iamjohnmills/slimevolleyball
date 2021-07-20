@@ -1,18 +1,18 @@
 class Slime {
   constructor(options) {
     this.is_player = options.is_player;
-    this.x = options.x // Position X
-    this.y = 0 // Position Y
-    this.xv = 0 // Velocity X
-    this.yv = 0 // Velocity Y
+    this.x = options.x;
+    this.y = 0;
+    this.xv = 0;
+    this.yv = 0;
     this.color = options.color
-    this.radius = options.radius
-    this.eye_location = options.eye_location
+    this.radius = options.radius;
+    this.eye_location = options.eye_location;
     this.bounds = {
       left: options.left,
       right: options.right,
     }
-    this.start_x = options.x
+    this.start_x = options.x;
     this.chat = {
       show: false,
       location: options.chat.location,

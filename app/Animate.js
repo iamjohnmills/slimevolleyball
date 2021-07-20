@@ -1,7 +1,6 @@
 class Animate {
   constructor(options) {
     this.theme = options.theme;
-    console.log(this.theme)
     this.context = null;
     this.pi = options.pi;
     this.two_pi = options.pi * 2;
