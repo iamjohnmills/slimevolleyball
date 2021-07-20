@@ -33,6 +33,8 @@ class Animate {
       width: 750,
       height: 375,
     }
+    this.center_x = options.width / 2
+    this.center_y = options.height / 2
   }
   setCanvas(options){
     this.context = options.canvas.getContext("2d", {alpha: false});
@@ -40,6 +42,7 @@ class Animate {
   game(options){
     // Apply pixel densities and return canvas parameter values
     this.drawBackdrop();
+    this.drawFloor()
 
     if(options.slime_player){
       this.drawSlime( this.applyPixelDensityToSlime({ slime: options.slime_player, ball: options.ball }) );
@@ -90,6 +93,10 @@ class Animate {
     this.context.arc(slime.x, slime.y, slime.radius, this.pi, this.two_pi);
     this.context.fillStyle = slime.color;
     this.context.fill();
+    this.context.beginPath();
+    this.context.ellipse(slime.x, slime.y, slime.radius,slime.radius / 5,0,0, this.two_pi);
+    this.context.fillStyle = slime.color;
+    this.context.fill();
     this.context.translate(slime.eye.translate.x, slime.eye.translate.y);
     this.context.beginPath();
     this.context.arc(slime.eye.x, slime.eye.y, slime.eye.radius, 0, this.two_pi);
@@ -103,7 +110,7 @@ class Animate {
   }
   drawSlimeChat(slime){
     if(!slime.chat.show) return;
-    this.context.font = '16px Arial';
+    this.context.font = 'bold 16px Arial';
     var x = slime.x;
     var y = slime.y - slime.radius - 20;
     var line_height = 18;

@@ -143,6 +143,7 @@ async function runGame(){
     }
     if( game.getGameEnd() ){
       if( game.getPlayerIsWinner() ){
+
       } else {
       }
       game.setGameOver({ callback: setupGameRound, delay: 2000 });

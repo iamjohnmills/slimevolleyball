@@ -95,27 +95,6 @@ class Water {
     })
   }
   async splashSlime(slime) {
-    //console.log(slime)
     await this.moveWater(slime.x,slime.y,slime.xv,slime.yv)
-    /*
-    var dx = 2 * (this.x - slime.x);
-    var dy = this.y - slime.y;
-    var dist = Math.trunc(Math.sqrt(dx * dx + dy * dy));
-    var dVelocityX = this.xv - slime.xv;
-    var dVelocityY = this.yv - slime.yv;
-    if(dy > 0 && dist < this.radius + slime.radius && dist > this.bounds.collision_padding) {
-      this.x = slime.x + Math.trunc(Math.trunc((slime.radius + this.radius) / 2) * dx / dist);
-      this.y = slime.y + Math.trunc((slime.radius + this.radius) * dy / dist);
-      var l = Math.trunc((dx * dVelocityX + dy * dVelocityY) / dist);
-      if(l <= 0) {
-        this.xv += Math.trunc(slime.xv - 2 * dx * l / dist);
-        this.yv += Math.trunc(slime.yv - 2 * dy * l / dist);
-        if( this.xv < -this.xv_max) this.xv = -this.xv_max;
-        else if(this.xv > this.xv_max) this.xv =  this.xv_max;
-        if( this.yv < -this.yv_max) this.yv = -this.yv_max;
-        else if(this.yv > this.yv_max) this.yv = this.yv_max;
-      }
-    }
-    */
   }
 }
