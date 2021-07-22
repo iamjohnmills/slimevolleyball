@@ -21,77 +21,120 @@ class PatheticWhiteSlime extends SlimeAI {
 
     if( this.slimeServe(options) ) return;
 
-    const hitbox = this.y > 0 && this.x < 575 ? 0 : 35; // 35 // this ends up being where the slime will try to hit it on its head
+
+    const hitbox_in_air = 0
+    const hitbox_on_ground = 5
+    const hitbox = this.y > 0 ? hitbox_in_air : hitbox_on_ground;
     const ball_trajectory = this.getBallTrajectoryX({ ball: ball, y_limit: 125 });
     const slime_jumping = this.y !== 0;
     const slime_in_range_of_trajectory = Math.abs(this.x - ball_trajectory) < hitbox; // this.slimeInRange(ball_trajectory,hitbox);
 
-    //if( slime_in_range_of_trajectory && slime_jumping ) return;
 
-    // SLIME JUMP BEHAVIOR
-    const slime_in_range_of_ball_150 = Math.abs(this.x - options.ball.x) < 150; // this.slimeInRange(options.ball.x,150);
-    const slime_can_jump =
-      !slime_jumping &&
-      ball_trajectory >= 500 &&
-      ball_trajectory <= 1000 &&
-      slime_in_range_of_trajectory &&
-      slime_in_range_of_ball_150;
+    // JUMP BEHAVIOR
+    const slime_jump_conditions = [
+      /*
+      (
+        this.x >= 900 &&
+        options.ball.x > 830
+      ),
+      */
+      (
+        this.x <= 580 &&
+        options.ball.x < 530 &&
+        Math.abs(this.x - options.ball.x) < 100
+      ),
+      (
+        (Math.pow(Math.abs(this.x - options.ball.x), 2) * 2 + Math.pow(Math.abs(this.y - options.ball.y), 2) < 28900) &&
+        (options.ball.x != this.x)
+      ),
+      (
+         // might need to be asolute-ized
+        (Math.pow(Math.abs(options.ball.xv), 2) + Math.pow(Math.abs(options.ball.yv), 2) < 20) &&
+        (options.ball.x - this.x < 30) &&
+        (options.ball.x != this.x)
+      ),
+      (
+        Math.abs(this.x - options.ball.x) < 150 &&
+        options.ball.y > 50 &&
+        options.ball.y < 400 &&
+        Math.random() < 0.666
+      ),
+    ]
 
-      //(this.x >= 900 && options.ball.x > 830) ||
-      //(this.x <= 580 && options.ball.x < 530 && Math.abs(options.ball.x - this.x) < 100)
-      //options.ball.y > 50 &&
-      //options.ball.y < 400 &&
-      //options.ball.x != this.x &&
-      //Math.pow(options.ball.xv, 2) + Math.pow(options.ball.yv, 2) < 20;
-      //Math.pow(options.ball.x - this.x, 2) * 2 + Math.pow(options.ball.y - this.y, 2) < 28900;
-
-    if( slime_can_jump ) {
+    if(!slime_jumping && slime_in_range_of_trajectory && slime_jump_conditions.includes(true)){
       this.slimeJump();
+    }
+
+    // STOP BEHAVIOR
+    const move_stop_conditions = [
+      (
+        ball_trajectory < 500 &&
+        Math.abs(this.x - 665) < 20
+      ),
+      (
+        !slime_jumping &&
+        ball_trajectory >= 500 &&
+        slime_in_range_of_trajectory
+      ),
+      (
+        slime_jumping &&
+        ball_trajectory >= 500 &&
+        Math.abs(this.x - options.ball.x) < hitbox
+      ),
+      (
+        slime_jumping &&
+        ball_trajectory >= 500 &&
+        this.x < options.ball.x
+      ),
+    ]
+
+    if(move_stop_conditions.includes(true)){
+      this.slimeStop();
       return;
     }
 
-    // SLIME BEHAVIOR WHEN BALL ON PLAYERS SIDE
-    const slime_in_range_of_665_20 = Math.abs(this.x - 665) < 20; // this.slimeInRange(665,20);
-    const slime_beyond_665 = this.x > 665;
-    if ( ball_trajectory < 500 && slime_in_range_of_665_20 ) {
-      this.slimeStop();
-      return;
-    } else if ( ball_trajectory < 500 && slime_beyond_665 ) {
+    // MOVE LEFT BEHAVIOR
+    const move_left_conditions = [
+      (
+        ball_trajectory < 500 &&
+        this.x > 665
+      ),
+      (
+        !slime_jumping &&
+        ball_trajectory >= 500 &&
+        this.x > ball_trajectory + hitbox
+      ),
+      (
+        slime_jumping &&
+        ball_trajectory >= 500 &&
+        this.x > options.ball.x
+      ),
+    ]
+
+    if(move_left_conditions.includes(true)){
       this.slimeMoveLeft();
       return;
-    } else if( ball_trajectory < 500 ) {
+    }
+
+
+    // MOVE RIGHT BEHAVIOR
+    const move_right_conditions = [
+      (
+        ball_trajectory < 500
+      ),
+      (
+        !slime_jumping &&
+        ball_trajectory >= 500 &&
+        this.x < ball_trajectory + hitbox
+      ),
+    ]
+
+    if(move_right_conditions.includes(true)){
       this.slimeMoveRight();
       return;
     }
 
-    // SLIME BEHAVIOR WHEN BALL ON SLIME SIDE
-    const ball_trajectory_left_of_slime = ball_trajectory + hitbox < this.x;
-    const ball_trajectory_right_of_slime = ball_trajectory + hitbox > this.x;
-    if( ball_trajectory >= 500 && !slime_jumping && slime_in_range_of_trajectory ) {
-      this.slimeStop();
-      return;
-    } else if ( ball_trajectory >= 500 && !slime_jumping && ball_trajectory_left_of_slime ) {
-      this.slimeMoveLeft();
-      return;
-    } else if ( ball_trajectory >= 500 && !slime_jumping && ball_trajectory_right_of_slime ) {
-      this.slimeMoveRight();
-      return;
-    }
 
-    // SLIME BEHAVIOR WHEN BALL ON SLIME SIDE AND JUMPING
-    const slime_in_range_of_ball_hitbox = Math.abs(this.x - options.ball.x) < hitbox; // this.slimeInRange(options.ball.x,hitbox);
-    const ball_right_of_slime = options.ball.x > this.x;
-    const ball_left_of_slime = options.ball.x < this.x;
-    if( ball_trajectory >= 500 && slime_jumping && slime_in_range_of_ball_hitbox ) {
-      this.slimeStop();
-      return;
-    } else if ( ball_trajectory >= 500 && slime_jumping && ball_left_of_slime ) { // ball to the left of slime
-      this.slimeMoveLeft();
-      return;
-    } else if ( ball_trajectory >= 500 && slime_jumping && ball_right_of_slime ) { // ball to the right of slime
-      this.slimeMoveRight();
-      return;
-    }
 
 
 
@@ -108,11 +151,5 @@ class PatheticWhiteSlime extends SlimeAI {
       this.slimeMoveLeft();
     }
     return true;
-  }
-  slimeMoves(){
-
-  }
-  slimeJumpMoves(){
-
   }
 }

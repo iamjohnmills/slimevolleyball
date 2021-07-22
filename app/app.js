@@ -88,7 +88,7 @@ const themes = {
         fill: '#FFFFFF',
         stroke: {
           color: 'transparent',
-          width: 2,
+          width: 0,
         }
       },
       pupil: '#000'
@@ -135,6 +135,52 @@ const themes = {
         stroke: {
           color: 'transparent',
           width: 2,
+        }
+      },
+      pupil: '#000'
+    },
+  },
+  jungle: {
+    logo: '#097969',
+    mode: 'fill',
+    ball: '#FFFF00',
+    background: ['#097969','#097969'],
+    water: 'rgba(80, 200, 120,0.8)',
+    net: '#FFFFFF',
+    score: {
+      inactive: "#134F40",
+      active: "#FFFF00",
+    },
+    slime_player: {
+      body: {
+        fill: '#FFFF00',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'rgba(0,0,0,0.15)',
+          width: 3,
+        }
+      },
+      pupil: '#000000'
+    },
+    slime_opponent: {
+      body: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFF',
+        stroke: {
+          color: 'transparent',
+          width: 3,
         }
       },
       pupil: '#000'
