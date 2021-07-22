@@ -3,6 +3,7 @@ var slime_opponent;
 
 const themes = {
   classic: {
+    logo: '#0000FF',
     mode: 'fill',
     ball: '#FFFF00',
     background: ['#0000FF','#0000FF'],
@@ -24,9 +25,10 @@ const themes = {
     },
   },
   sunset: {
+    logo: '#ec6f66',
     mode: 'fill',
     ball: '#FFFF00',
-    background: ['#ff5f6d','#ff5f6d'],
+    background: ['#ec6f66','#f3a183'],
     water: 'rgba(199, 0, 57 ,0.6)',
     net: '#FFFFFF',
     score: {
@@ -46,7 +48,7 @@ const themes = {
   },
 }
 
-let active_theme = themes.classic;
+let active_theme = themes.sunset;
 
 var animate = new Animate({ theme: active_theme, width: 750, height: 375, pi: Math.PI });
 var inputs = new Inputs();
@@ -240,6 +242,8 @@ async function startGame() {
 }
 
 function init(){
+
+  document.getElementById('logo').style.color = active_theme.logo;
 
   document.addEventListener('keydown',function(e){
     inputs.keyDown(e.code);

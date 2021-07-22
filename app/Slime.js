@@ -41,11 +41,11 @@ class Slime {
       this.yv = 0;
     }
   }
-  slimeMoveLeft(){
-    this.xv = -8
+  slimeMoveLeft(v = 8){
+    this.xv = -v
   }
-  slimeMoveRight(){
-    this.xv = 8
+  slimeMoveRight(v = 8){
+    this.xv = v
   }
   slimeJump(){
     this.yv = 31;
