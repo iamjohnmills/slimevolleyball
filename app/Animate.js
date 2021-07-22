@@ -35,6 +35,9 @@ class Animate {
       height: 375,
     }
   }
+  setTheme(theme){
+    this.theme = theme;
+  }
   setCanvas(options){
     this.context = options.canvas.getContext("2d", {alpha: false});
   }
@@ -92,19 +95,36 @@ class Animate {
   }
   drawSlime(slime){
     this.drawSlimeChat(slime);
-    this.context.beginPath();
-    this.context.arc(slime.x, slime.y, slime.radius, this.pi, this.two_pi);
-    this.context.fillStyle = slime.is_player ? this.theme.slime_player.body : this.theme.slime_opponent.body;
-    this.context.fill();
+
+    // slime rounded bottom
     this.context.beginPath();
     this.context.ellipse(slime.x, slime.y, slime.radius,slime.radius / 5,0,0, this.two_pi);
-    this.context.fillStyle = slime.is_player ? this.theme.slime_player.body : this.theme.slime_opponent.body;
+    this.context.strokeStyle = slime.is_player ? this.theme.slime_player.body.stroke.color : this.theme.slime_opponent.body.stroke.color;
+    this.context.lineWidth = slime.is_player ? this.theme.slime_player.body.stroke.width : this.theme.slime_opponent.body.stroke.width;
+    this.context.fillStyle = slime.is_player ? this.theme.slime_player.body.fill : this.theme.slime_opponent.body.fill;
+    this.context.stroke();
     this.context.fill();
+
+    // slime body
+    this.context.beginPath();
+    this.context.arc(slime.x, slime.y, slime.radius, this.pi, this.two_pi);
+    this.context.strokeStyle = slime.is_player ? this.theme.slime_player.body.stroke.color : this.theme.slime_opponent.body.stroke.color;
+    this.context.lineWidth = slime.is_player ? this.theme.slime_player.body.stroke.width : this.theme.slime_opponent.body.stroke.width;
+    this.context.fillStyle = slime.is_player ? this.theme.slime_player.body.fill : this.theme.slime_opponent.body.fill;
+    this.context.stroke();
+    this.context.fill();
+
+
     this.context.translate(slime.eye.translate.x, slime.eye.translate.y);
+
     this.context.beginPath();
     this.context.arc(slime.eye.x, slime.eye.y, slime.eye.radius, 0, this.two_pi);
-    this.context.fillStyle = slime.is_player ? this.theme.slime_player.eye : this.theme.slime_opponent.eye;
+    this.context.fillStyle = slime.is_player ? this.theme.slime_player.eye.fill : this.theme.slime_opponent.eye.fill;
+    this.context.strokeStyle = slime.is_player ? this.theme.slime_player.eye.stroke.color : this.theme.slime_opponent.eye.stroke.color;
+    this.context.lineWidth = slime.is_player ? this.theme.slime_player.eye.stroke.width : this.theme.slime_opponent.eye.stroke.width;
+    this.context.stroke();
     this.context.fill();
+
     this.context.beginPath();
     this.context.arc(slime.pupil.x, slime.pupil.y, slime.pupil.radius, 0, this.two_pi);
     this.context.fillStyle = slime.is_player ? this.theme.slime_player.pupil : this.theme.slime_opponent.pupil;

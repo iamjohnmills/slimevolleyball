@@ -14,13 +14,37 @@ const themes = {
       active: "#FFFF00",
     },
     slime_player: {
-      body: '#FFFF00',
-      eye: '#FFFFFF',
+      body: {
+        fill: '#FFFF00',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'rgba(0,0,0,0.15)',
+          width: 3,
+        }
+      },
       pupil: '#000000'
     },
     slime_opponent: {
-      body: '#FFFFFF',
-      eye: '#FFFFFF',
+      body: {
+        fill: '#fff',
+        stroke: {
+          color: 'rgba(255,255,255,0.8)',
+          width: 2,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'transparent',
+          width: 3,
+        }
+      },
       pupil: '#000000'
     },
   },
@@ -36,20 +60,146 @@ const themes = {
       active: "#FFFF00",
     },
     slime_player: {
-      body: '#FFFF00',
-      eye: '#FFFFFF',
+      body: {
+        fill: '#FFFF00',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'rgba(0,0,0,0.15)',
+          width: 3,
+        }
+      },
       pupil: '#000000'
     },
     slime_opponent: {
-      body: '#FFFFFF',
-      eye: '#FFFFFF',
+      body: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'transparent',
+          width: 2,
+        }
+      },
+      pupil: '#000'
+    },
+  },
+  sewer: {
+    logo: '#05341C',
+    mode: 'fill',
+    ball: '#FFFF00',
+    background: ['#05341C','#005D47'],
+    water: 'rgba(170, 255, 0,0.8)',
+    net: '#FFFFFF',
+    score: {
+      inactive: "#005D47",
+      active: "#FFFF00",
+    },
+    slime_player: {
+      body: {
+        fill: '#FFFF00',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'rgba(0,0,0,0.15)',
+          width: 3,
+        }
+      },
+      pupil: '#000000'
+    },
+    slime_opponent: {
+      body: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'transparent',
+          width: 2,
+        }
+      },
+      pupil: '#000'
+    },
+  },
+  beehive: {
+    logo: 'rgb(231	124	0)',
+    mode: 'fill',
+    ball: '#FFFF00',
+    background: ['rgb(231	124	0)','rgb(237	164	54)'],
+    water: 'rgba(255, 215, 0,0.8)',
+    net: '#FFFFFF',
+    score: {
+      inactive: "#C04000",
+      active: "#FFFF00",
+    },
+    slime_player: {
+      body: {
+        fill: '#FFFF00',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'rgba(0,0,0,0.15)',
+          width: 3,
+        }
+      },
+      pupil: '#000000'
+    },
+    slime_opponent: {
+      body: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'transparent',
+          width: 0,
+        }
+      },
+      eye: {
+        fill: '#FFFFFF',
+        stroke: {
+          color: 'transparent',
+          width: 3,
+        }
+      },
       pupil: '#000000'
     },
   },
+
+
 }
 
-let active_theme = themes.sunset;
+let active_theme;
 
+let animate;
+let inputs;
+let ball;
+let water;
+let game;
+let online;
+
+/*
 var animate = new Animate({ theme: active_theme, width: 750, height: 375, pi: Math.PI });
 var inputs = new Inputs();
 var ball = new Ball();
@@ -58,6 +208,7 @@ var game = new Game({ setup_game_round_callback: setupGameRound, interval: { cal
 var online = new Online({ socket_installed: typeof io == 'function', init_callback: onlineInit });
 
 var socket;
+*/
 
 function onlineInit(){
 
@@ -241,9 +392,41 @@ async function startGame() {
   });
 }
 
-function init(){
-
+function setTheme(name){
+  active_theme = themes[name];
+  console.log(active_theme)
   document.getElementById('logo').style.color = active_theme.logo;
+  if(animate){
+  animate.setTheme(active_theme);
+
+  }
+}
+
+async function init(){
+
+  const themes_el = document.getElementById('themes');
+  Object.keys(themes).forEach(i => {
+    const theme_el = document.createElement('div');
+    theme_el.classList.add('theme');
+    theme_el.style.backgroundColor = themes[i].background[0];
+    themes_el.appendChild(theme_el);
+    theme_el.addEventListener('click',(e) => {
+      setTheme(i);
+    })
+  })
+
+  await setTheme('classic')
+
+  animate = new Animate({ theme: active_theme, width: 750, height: 375, pi: Math.PI });
+  inputs = new Inputs();
+  ball = new Ball();
+  water = new Water();
+  game = new Game({ setup_game_round_callback: setupGameRound, interval: { callback: startGame, delay: 20 } });
+  online = new Online({ socket_installed: typeof io == 'function', init_callback: onlineInit });
+
+
+
+
 
   document.addEventListener('keydown',function(e){
     inputs.keyDown(e.code);
