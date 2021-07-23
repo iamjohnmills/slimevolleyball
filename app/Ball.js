@@ -5,7 +5,7 @@ class Ball {
     this.xv = 0; // Velocity X
     this.yv = 0; // Velocity Y
     this.xv_max = 15; // Max Velocity X
-    this.yv_max = 22; // Max Velocity Y
+    this.yv_max = 22; // 22 // Max Velocity Y
     this.gravity = 1;
     this.color = 'Yellow';
     this.radius = 30;

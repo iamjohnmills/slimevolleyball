@@ -13,16 +13,13 @@ class Game {
       end: 3,
     }
     this.state = 1;
-    this.interval = {
-      callback: options.interval.callback,
-      delay: options.interval.delay,
-      obj: null,
-    };
-    this.setup_game_round_callback = options.setup_game_round_callback;
+    this.interval = null;
+    this.setup_round = options.setup_round;
+    this.start_game = options.start_game;
   }
   start(){
     this.resetGameInterval();
-    this.setup_game_round_callback();
+    this.setup_round();
   }
   getScore(){
     return this.score;
@@ -32,16 +29,16 @@ class Game {
   }
   setRoundOver(options){
     this.state = this.states.pause;
-    setTimeout(function(){
-      options.callback();
-    }, options.delay)
+    setTimeout(() => {
+      this.setup_round()
+    }, 400);
   }
   setGameOver(options){
     this.state = this.states.pause;
-    setTimeout(function(){
+    setTimeout(() => {
       this.resetGame();
-      options.callback();
-    }.bind(this), options.delay)
+      this.setup_round()
+    }, 2000)
   }
   getGameEnd(){
     return this.state == this.states.end;
@@ -63,15 +60,15 @@ class Game {
   getWhoServes(){
     return this.player_to_serve;
   }
-  setPaused(){
-    this.state = this.states.pause;
+  setPaused(val){
+    this.states.pause = val;
   }
   isPaused(){
     return this.state == this.states.pause;
   }
   resetGameInterval(){
-    clearInterval(this.interval.obj);
-    this.interval.obj = setInterval(this.interval.callback, this.interval.delay);
+    clearInterval(this.interval);
+    this.interval = setInterval(this.start_game, 20);
   }
   setStateActive(){
     this.state = this.states.active;

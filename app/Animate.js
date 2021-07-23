@@ -1,25 +1,25 @@
 class Animate {
   constructor(options) {
     this.theme = options.theme;
-    this.context = null;
-    this.pi = options.pi;
-    this.two_pi = options.pi * 2;
+    this.context = document.getElementById('slime').getContext('2d', {alpha: false});
+    this.pi = Math.PI;
+    this.two_pi = this.pi * 2;
     this.pixel_density = {
-      x: options.width / 1000,
-      y: options.height / 1000,
+      x: 750 / 1000,
+      y: 375 / 1000,
     }
     this.backdrop = {
       color: '#0000FF',
       x: 0,
       y: 0,
-      width: options.width,
-      height: options.height - 75,
+      width: 750,
+      height: 375 - 75,
     }
     this.floor = {
       color: '#0000FF',
       x: 0,
-      y: options.height - 75,
-      width: options.width,
+      y: 375 - 75,
+      width: 750,
       height: 75,
     }
     this.net = {
@@ -38,9 +38,9 @@ class Animate {
   setTheme(theme){
     this.theme = theme;
   }
-  setCanvas(options){
-    this.context = options.canvas.getContext("2d", {alpha: false});
-  }
+  //setCanvas(options){
+    //this.context = options.canvas.getContext("2d", {alpha: false});
+  //}
   game(options){
     this.drawBackdrop();
     this.drawFloor()

@@ -44,17 +44,15 @@ class Slime {
     }
     */
 
+    this.yv -= 2;
+    this.y += this.yv;
     if(this.do_slime_dunk) {
-        this.yv -= 2;
-        this.y += this.yv;
       if(this.y <= 0 && this.yv >= 0) {
         this.yv = 40;
       } else if(this.y <= -40 && this.yv <= 0) {
         this.yv += Math.abs(this.yv) * 2;
       }
     } else {
-      this.yv -= 2;
-      this.y += this.yv;
       if(this.y < 0 && this.yv < 0) {
         this.y = 0;
         this.yv = 0;

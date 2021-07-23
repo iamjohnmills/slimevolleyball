@@ -1,8 +1,8 @@
 class Online {
   constructor(options){
-    this.socket_installed = options.socket_installed;
+    //this.socket_installed = options.socket_installed;
+    this.socketio = options.socketio;
     this.is_online = true;
-    this.init_callback = options.init_callback;
     this.client_id = null;
     this.online_state = 1;
     this.online_states = {
@@ -16,9 +16,86 @@ class Online {
       client_id_host: null,
       client_id_opponent: null,
     };
-  }
-  init(){
-    this.init_callback();
+
+    this.socketio.on('connect', () => {
+      this.setClientID({ client_id: this.socketio.id })
+    });
+
+    this.socketio.on('room_unavailable', (params) => {
+      if( this.getClientID() != params.client_id ) return;
+      document.getElementById('room-status').innerHTML = 'Room unavailable.';
+      setTimeout(function(){
+        document.getElementById('room-status').innerHTML = '';
+      },2000);
+    });
+
+    this.socketio.on('room_created', (params) => {
+      if( this.getClientID() == params.client_id_host){
+        this.setRoomNameAndHost({ client_id_host: params.client_id_host, room_name: params.room_name })
+        if( this.isRoomHost() ){
+          document.getElementById('room-status').innerHTML = '...';
+        }
+      }
+    });
+
+    this.socketio.on('opponent_joined', (params) => {
+      if( this.getClientID() == params.client_id_opponent || this.getClientID() == params.client_id_host){
+        this.setRoom({ room_name: params.room_name, client_id_host: params.client_id_host, client_id_opponent: params.client_id_opponent });
+        document.getElementById('room-status').innerHTML = '';
+        options.opponent_joined();
+      }
+    });
+
+    this.socketio.on('client_disconnected', (params) => {
+      this.setClientDisconnected({ client_id: params.client_id });
+      if( this.isInRoom() ){
+        document.getElementById('room-input').classList.remove('hide');
+        document.getElementById('room-input').value = '';
+        document.getElementById('room-input').blur();
+        document.getElementById('chat-input').classList.add('hide');
+        this.reset();
+        options.opponent_disconnected();
+      }
+    });
+
+    this.socketio.on('chat_from_server', (params) => {
+      if( params.client_id == this.getRoomHost() ){
+        options.set_player_chat(params);
+      } else if( params.client_id == this.getRoomOpponent() ){
+        options.set_opponent_chat(params);
+      }
+    })
+
+    this.socketio.on('game_from_server', (params) => {
+      if( params.client_id == this.getRoomOpponent() && this.isRoomHost() ){
+        options.set_opponent(params);
+      } else if( params.client_id == this.getRoomHost() && this.isRoomOpponent() ){
+        options.set_player(params);
+      }
+    });
+
+    document.getElementById('menu-bottom').classList.remove('hide');
+
+    document.getElementById('room-input').addEventListener('keyup', (event) => {
+      if(!event.target.value){
+        event.target.blur();
+        return;
+      }
+      if(event.keyCode === 13) { // press enter
+        this.socketio.emit('create_join_room', { room_name: event.target.value, client_id: this.getClientID() });
+        event.target.blur();
+      }
+    });
+
+    document.getElementById('chat-input').addEventListener('keyup', (event) => {
+      if (event.keyCode === 13) { // press enter
+        this.socketio.emit('chat_from_client', { room_name: this.getRoomName(), message: event.target.value, client_id: this.getClientID() });
+        event.target.value = '';
+        event.target.blur();
+      }
+    });
+
+
   }
   reset(){
     this.room.room_name = null;
@@ -26,7 +103,7 @@ class Online {
     this.room.client_id_opponent = null;
   }
   getIsOnline(){
-    return this.socket_installed && this.is_online;
+    return this.socketio && this.is_online;
   }
   ready(){
     return this.room.client_id_host && this.room.client_id_opponent ? true : false;
@@ -83,7 +160,4 @@ class Online {
     this.room.room_name = options.room_name;
     this.room.client_id_host = options.client_id_host;
   }
-  //setRoomOpponent(options){
-  //  this.room.client_id_opponent = options.client_id_opponent;
-  //}
 }

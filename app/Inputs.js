@@ -4,6 +4,13 @@ class Inputs {
     this.down = false;
     this.left = false;
     this.right = false;
+    document.addEventListener('keydown', e => {
+      this.keyDown(e.code);
+    });
+
+    document.addEventListener('keyup', e => {
+      this.keyUp(e.code);
+    });
   }
   getClient(){
     return {
