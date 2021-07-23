@@ -170,7 +170,7 @@ const themes = {
     },
     slime_opponent: {
       body: {
-        fill: '#FFFFFF',
+        fill: '#FFF',
         stroke: {
           color: 'transparent',
           width: 0,

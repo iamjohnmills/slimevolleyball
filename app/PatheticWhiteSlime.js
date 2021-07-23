@@ -2,7 +2,6 @@ class PatheticWhiteSlime extends SlimeAI {
   setSlimeMovement(options){
     // Pathetic White Slime reporting for duty
 
-
     // alien slime
     // drunk slime
     // ambergris??? whale vomit intro

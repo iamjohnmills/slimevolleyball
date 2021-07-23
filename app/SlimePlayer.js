@@ -3,6 +3,7 @@ class SlimePlayer extends Slime {
     if(this.y == 0 && options.inputs.jump){
       this.slimeJump();
     }
+    this.do_slime_dunk = options.inputs.down;
     if(options.inputs.left && !options.inputs.right) {
       this.slimeMoveLeft();
     } else if(options.inputs.right && !options.inputs.left) {

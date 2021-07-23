@@ -1,12 +1,14 @@
 class Inputs {
   constructor() {
     this.jump = false;
+    this.down = false;
     this.left = false;
     this.right = false;
   }
   getClient(){
     return {
       jump: this.jump,
+      down: this.down,
       left: this.left,
       right: this.right,
     };
@@ -14,6 +16,9 @@ class Inputs {
   keyDown(key){
     if(key == 'ArrowUp'){
       this.jump = true;
+    }
+    if(key == 'ArrowDown'){
+      this.down = true;
     }
     if(key == 'ArrowLeft'){
       this.left = true;
@@ -25,6 +30,9 @@ class Inputs {
   keyUp(key){
     if(key == 'ArrowUp'){
       this.jump = false;
+    }
+    if(key == 'ArrowDown'){
+      this.down = false;
     }
     if(key == 'ArrowLeft'){
       this.left = false;
