@@ -41,7 +41,7 @@ async function init(){
   water = new Water();
 
 
-  var framerate = 1000 / 60;
+  var framerate = 17;
 
 
   game = new Game({
@@ -112,8 +112,8 @@ async function init(){
 
 
 
-    var delta = performance.now();
-    var deltaTime = performance.now() - delta;
+    var delta = Date.now();
+    var deltaTime = Date.now() - delta;
     if (deltaTime >= framerate) {
       window.requestAnimationFrame(game.start_game);
       //requestAnimationFrame(exampleThree);
