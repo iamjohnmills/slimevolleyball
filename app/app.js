@@ -115,7 +115,7 @@ async function init(){
     var delta = Date.now();
     var deltaTime = Date.now() - delta;
     if (deltaTime >= framerate) {
-      window.requestAnimationFrame(game.start_game);
+      //window.requestAnimationFrame(game.start_game);
       //requestAnimationFrame(exampleThree);
     } else {
       setTimeout( () => {
