@@ -16,10 +16,19 @@ class Game {
     this.interval = null;
     this.setup_round = options.setup_round;
     this.start_game = options.start_game;
+
   }
-  start(){
-    this.resetGameInterval();
-    this.setup_round();
+  async start(){
+
+
+    //var frameRate = 1000/60;
+    //var lastFrame = 0;
+    //var startTime;
+
+    //this.resetGameInterval();
+    await this.setup_round();
+    window.requestAnimationFrame(this.start_game);
+    //this.start_game();
   }
   getScore(){
     return this.score;
@@ -30,14 +39,14 @@ class Game {
   setRoundOver(options){
     this.state = this.states.pause;
     setTimeout(() => {
-      this.setup_round()
+      this.start()
     }, 400);
   }
   setGameOver(options){
     this.state = this.states.pause;
     setTimeout(() => {
       this.resetGame();
-      this.setup_round()
+      this.start()
     }, 2000)
   }
   getGameEnd(){

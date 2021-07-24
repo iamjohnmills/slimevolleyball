@@ -141,8 +141,8 @@ export default {
     logo: '#097969',
     mode: 'fill',
     ball: '#FFFF00',
-    background: ['#097969','#097969'],
-    water: 'rgba(80, 200, 120,0.8)',
+    background: ['rgb(71, 135, 120)','rgb(42, 170, 138)'],
+    water: 'rgba(9, 121, 105,0.8)',
     net: '#FFFFFF',
     score: {
       inactive: "#134F40",

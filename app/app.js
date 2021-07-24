@@ -40,27 +40,37 @@ async function init(){
   ball = new Ball();
   water = new Water();
 
+
+  var framerate = 1000 / 60;
+
+
   game = new Game({
     setup_round: () => {
       slime_player = new SlimePlayer({ x: 202, is_player: true, eye_location: 'right', chat: { location: 'left' }, radius: 100, left: 50, right: 445 });
-      slime_opponent = new PatheticWhiteSlime({ x: 800, is_player: false, eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
-
+      if( online.ready() ){
+        slime_opponent = new SlimePlayer({ x: 800, is_player: false, color: 'Yellow', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
+      } else {
+        slime_opponent = new PatheticWhiteSlime({ x: 800, is_player: false, eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
+      }
       ball.resetBall(game.getWhoServes());
       slime_player.resetSlime();
       slime_opponent.resetSlime();
       game.setStateActive();
     },
-    start_game: async () => {
-      if( game.isPaused() ) return;
+    start_game: async (time) => {
+
+      if( game.isPaused() ){
+        return;
+      }
       if( online.ready() ){
         document.getElementById('room-input').classList.add('hide');
         document.getElementById('chat-input').classList.remove('hide');
+        online.socketio.emit('game_from_client', { client_id: online.getClientID(), room_name: online.getRoomName(), ball: ball.getPosition(), slime_player: slime_player.getPosition(), slime_opponent: slime_opponent.getPosition() });
         if( online.isRoomHost() ){
           slime_player.setSlimeMovement({ inputs: inputs.getClient() });
         } else if( online.isRoomOpponent() ){
           slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
         }
-        online.socketio.emit('game_from_client', { client_id: online.getClientID(), room_name: online.getRoomName(), ball: ball.getPosition(), slime_player: slime_player.getPosition(), slime_opponent: slime_opponent.getPosition() });
       } else {
         slime_player.setSlimeMovement({ inputs: inputs.getClient() });
         slime_opponent.setSlimeMovement({ ball: ball, slime: slime_player });
@@ -89,17 +99,31 @@ async function init(){
           game.setRoundOver();
         }
       }
-      requestAnimationFrame(async function(){
-        await animate.game({
-          ball: ball,
-          slime_player: slime_player,
-          slime_opponent: slime_opponent,
-          score: game.getScore(),
-          water: {
-            particles: await water.getParticles()
-          }
-        });
+
+      await animate.game({
+        ball: ball,
+        slime_player: slime_player,
+        slime_opponent: slime_opponent,
+        score: game.getScore(),
+        water: {
+          particles: await water.getParticles()
+        }
       });
+
+
+
+    var delta = performance.now();
+    var deltaTime = performance.now() - delta;
+    if (deltaTime >= framerate) {
+      window.requestAnimationFrame(game.start_game);
+      //requestAnimationFrame(exampleThree);
+    } else {
+      setTimeout( () => {
+        window.requestAnimationFrame(game.start_game);
+      }, framerate - deltaTime);
+    }
+
+
     },
   });
 
@@ -107,15 +131,18 @@ async function init(){
   online = new Online({
     socketio: typeof io == 'function' ? io() : null,
     opponent_joined: () => {
+      //game.start();
+      game.resetGame({ delay: 700 });
       slime_opponent = new SlimePlayer({ x: 800, is_player: false, color: 'Yellow', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
       slime_opponent.setSlimeChat({message: 'Yo', delay: 2000 });
-      game.start();
+      //game.start();
     },
     opponent_disconnected: () => {
       game.resetGame({ delay: 700 });
+      //game.start();
       slime_opponent = new PatheticWhiteSlime({ x: 800, is_player: false, eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
       slime_opponent.setSlimeChat({message: 'Player quit', delay: 2000 });
-      game.start();
+      //game.start();
     },
     set_player_chat: (options) => {
       slime_player.setSlimeChat({ message: options.message, delay: 2000 });

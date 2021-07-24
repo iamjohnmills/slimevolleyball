@@ -47,7 +47,6 @@ class PatheticWhiteSlime extends SlimeAI {
         (options.ball.x != this.x)
       ),
       (
-         // might need to be asolute-ized
         (Math.pow(Math.abs(options.ball.xv), 2) + Math.pow(Math.abs(options.ball.yv), 2) < 20) &&
         (options.ball.x - this.x < 30) &&
         (options.ball.x != this.x)
