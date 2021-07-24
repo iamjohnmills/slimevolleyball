@@ -21,8 +21,8 @@ export default {
       eye: {
         fill: '#FFFFFF',
         stroke: {
-          color: 'rgba(0,0,0,0.15)',
-          width: 3
+          color: 'transparent',
+          width: 0
         }
       },
       pupil: '#000000'
@@ -67,7 +67,7 @@ export default {
       eye: {
         fill: '#FFFFFF',
         stroke: {
-          color: 'rgba(0,0,0,0.15)',
+          color: 'transparent',
           width: 3,
         }
       },
@@ -113,7 +113,7 @@ export default {
       eye: {
         fill: '#FFFFFF',
         stroke: {
-          color: 'rgba(0,0,0,0.15)',
+          color: 'transparent',
           width: 3
         }
       },
@@ -159,7 +159,7 @@ export default {
       eye: {
         fill: '#FFFFFF',
         stroke: {
-          color: 'rgba(0,0,0,0.15)',
+          color: 'transparent',
           width: 3
         }
       },
@@ -205,7 +205,7 @@ export default {
       eye: {
         fill: '#FFFFFF',
         stroke: {
-          color: 'rgba(0,0,0,0.15)',
+          color: 'transparent',
           width: 3
         }
       },
