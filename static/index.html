@@ -8,6 +8,7 @@
   .container { position: relative; min-width: 750px; padding: 30px 0; }
   .canvas-container { position: relative; }
   h1 { font-family: MonsterFriendFore; text-align: center; margin-top: 0; font-size: 52px; color: Blue }
+  .options-menu { display: flex; justify-content: center; }
   #themes { display: flex; justify-content: center; padding: 20px 0; margin: 0 -10px; }
   .theme { margin: 0 10px; border-radius: 50%; display: block; width: 30px; height: 30px; cursor:pointer; }
   canvas { width: 100%; border-radius: 8px; }
@@ -24,6 +25,15 @@
   #set-room input { width: 400px; margin: 0 auto; }
   #set-room input::placeholder { color: #fff; }
   #room-status { padding-top: 10px; position: absolute; top: 30px; color: #ffffff; margin: 0 auto;  text-align: center; left: 0; right: 0; }
+
+  #toggle-audio { margin: 10px 20px; display: flex; align-items: center; justify-content: center; border: 2px solid #333; background: #333; color: #fff; border-radius: 50%; width: 26px; height: 26px;  }
+  #toggle-audio.off { border-color: #333; background: #fff; color: #333; }
+
+  .audio-on, .audio-off { position: relative; left: -1px; display: none; cursor: pointer; width: 24px; height: 24px; }
+  #toggle-audio.on .audio-on,
+  #toggle-audio.off .audio-off {  display: block; }
+  .audio-controls { text-align: center; color: #000; padding: 10px 0; }
+  audio { display: none }
   </style>
 </head>
 <body>
@@ -40,9 +50,31 @@
           </div>
         </div>
       </div>
-      <div id="themes"></div>
+      <div class="options-menu">
+        <div class="audio-controls">
+          <div id="toggle-audio" class="off">
+            <svg class="audio-on" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-off-fill" viewBox="0 0 16 16">
+              <path d="M10.717 3.55A.5.5 0 0 1 11 4v8a.5.5 0 0 1-.812.39L7.825 10.5H5.5A.5.5 0 0 1 5 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/>
+            </svg>
+            <svg class="audio-off" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-volume-off" viewBox="0 0 16 16">
+              <path d="M10.717 3.55A.5.5 0 0 1 11 4v8a.5.5 0 0 1-.812.39L7.825 10.5H5.5A.5.5 0 0 1 5 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06zM10 5.04 8.312 6.39A.5.5 0 0 1 8 6.5H6v3h2a.5.5 0 0 1 .312.11L10 10.96V5.04z"/>
+            </svg>
+          </div>
+          <audio id="music" autoplay loop>
+            <source src="/music.mp3" type="audio/mpeg">
+          </audio>
+        </div>
+        <div id="themes"></div>
+
+      </div>
+
     </div>
   </div>
+  <!--
+  <embed id="background-audio" src="/music.mp3" autostart="1"></embed>
+  <audio controls autoplay>
+    <source src="/music.mp3" type="audio/mpeg">
+  </audio>-->
   <script src="/socket.io/socket.io.js"></script>
   <script src="app/Inputs.js"></script>
   <script src="app/Game.js"></script>

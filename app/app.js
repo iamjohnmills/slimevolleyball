@@ -11,6 +11,7 @@ let ball;
 let water;
 let game;
 let online;
+let music;
 
 function setTheme(name){
   active_theme = themes[name];
@@ -21,6 +22,19 @@ function setTheme(name){
 }
 
 async function init(){
+
+  document.getElementById('toggle-audio').addEventListener('click',function(event){
+
+    if(this.classList.contains('off')){
+      this.classList.add('on');
+      this.classList.remove('off');
+      document.getElementById('music').play()
+    } else {
+      this.classList.add('off');
+      this.classList.remove('on');
+      document.getElementById('music').pause()
+    }
+  })
 
   const themes_el = document.getElementById('themes');
   Object.keys(themes).forEach(i => {
