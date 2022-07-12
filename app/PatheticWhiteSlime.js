@@ -1,42 +1,90 @@
+// Pathetic White Slime reporting for duty
 class PatheticWhiteSlime extends SlimeAI {
+  constructor(...options){
+    super(...options);
+    this.ball_trajectory_y_limit = 125;
+  }
   setSlimeMovement(options){
-    // Pathetic White Slime reporting for duty
-
-    // alien slime
-    // drunk slime
-    // ambergris??? whale vomit intro
-
-
-    // if(slimePowerJump(options)) return;
-    // if(slimeMoves(options)) return;
-    // if(slimeJumpMoves(options)) return;
-
-    // ideas:
-    // punt guy: jump when range of ball is ~80; hitbox ~5; plays back
-    // -- power move: punt ball with jump + fast moveleft, then fast moveright
-
-    // fast guy: fast move back
-    // -- power move: rolls ball on head?
-
-    if( this.slimeServe(options) ) return;
-
-
-    const hitbox_in_air = 0
-    const hitbox_on_ground = 5
-    const hitbox = this.y > 0 ? hitbox_in_air : hitbox_on_ground;
-    const ball_trajectory = this.getBallTrajectoryX({ ball: options.ball, y_limit: 125 });
-    const slime_jumping = this.y !== 0;
-    const slime_in_range_of_trajectory = Math.abs(this.x - ball_trajectory) < hitbox; // this.slimeInRange(ball_trajectory,hitbox);
-
-
-    // JUMP BEHAVIOR
-    const slime_jump_conditions = [
-      /*
+    this.debug = options.debug;
+    if(this.isSlimeServe(options)) return this.serve(options);
+    this.setCalculations(options);
+    const jump = this.canJump({ rules: this.getJumpRules(options) });
+    const move_stop = this.canMove({ rules: this.getMoveStopRules(options) });
+    const move_left = this.canMove({ rules: this.getMoveLeftRules(options) });
+    const move_right = this.canMove({ rules: this.getMoveRightRules(options) });
+    if(this.debug){
+      console.log('ball trajectory: ' + this.ball_trajectory);
+      console.log('slime in range: ' + this.slime_in_range);
+      console.log('ball x,y: ' + options.ball.x + ',' + options.ball.y);
+      console.log('ball xv,yv: ' + options.ball.xv + ',' + options.ball.yv);
+      console.log('slime x,y: ' + this.x + ',' + this.y);
+      console.log('slime xv,yv: ' + this.xv + ',' + this.yv );
+      console.log('-----------------------------------------');
+      // console.log('jump', this.getJumpRules(options));
+      // console.log('move_stop', this.getMoveStopRules(options));
+      // console.log('move_left', this.getMoveLeftRules(options));
+      // console.log('move_right', this.getMoveRightRules(options));
+    }
+    if(jump) this.slimeJumpRandom(0.80)
+    if(move_stop) return this.slimeStop();
+    if(move_left) return this.slimeMoveLeft();
+    if(move_right) return this.slimeMoveRight();
+  }
+  getMoveRightRules(options){
+    return [
       (
-        this.x >= 900 &&
-        options.ball.x > 830
+        this.ball_trajectory < 500
       ),
-      */
+      (
+        !this.isSlimeJumping() &&
+        this.ball_trajectory >= 500 &&
+        this.x < this.ball_trajectory + this.getHitbox()
+      ),
+    ]
+  }
+  getMoveLeftRules(options){
+    return [
+      (
+        this.ball_trajectory < 500 &&
+        this.x > 665
+      ),
+      (
+        !this.isSlimeJumping() &&
+        this.ball_trajectory >= 500 &&
+        this.x > this.ball_trajectory + this.getHitbox()
+      ),
+      (
+        this.isSlimeJumping() &&
+        this.ball_trajectory >= 500 &&
+        this.x > options.ball.x
+      ),
+    ]
+  }
+  getMoveStopRules(options){
+    return [
+      (
+        this.ball_trajectory < 500 &&
+        Math.abs(this.x - 665) < 20
+      ),
+      (
+        !this.isSlimeJumping() &&
+        this.ball_trajectory >= 500 &&
+        this.slime_in_range
+      ),
+      (
+        this.isSlimeJumping() &&
+        this.ball_trajectory >= 500 &&
+        Math.abs(this.x - options.ball.x) < this.getHitbox()
+      ),
+      (
+        this.isSlimeJumping() &&
+        this.ball_trajectory >= 500 &&
+        this.x < options.ball.x
+      ),
+    ]
+  }
+  getJumpRules(options){
+    return [
       (
         this.x <= 580 &&
         options.ball.x < 530 &&
@@ -51,96 +99,15 @@ class PatheticWhiteSlime extends SlimeAI {
         (options.ball.x - this.x < 30) &&
         (options.ball.x != this.x)
       ),
-      (
-        Math.abs(this.x - options.ball.x) < 150 &&
-        options.ball.y > 50 &&
-        options.ball.y < 400 &&
-        Math.random() < 0.666
-      ),
+      // (
+      //   Math.abs(this.x - options.ball.x) < 150 &&
+      //   options.ball.y > 50 &&
+      //   options.ball.y < 400 &&
+      //   Math.random() < 0.666
+      // ),
     ]
-
-    if(!slime_jumping && slime_in_range_of_trajectory && slime_jump_conditions.includes(true)){
-      //this.slimeJump();
-      this.slimeJumpRandom(0.80)
-    }
-
-    // STOP BEHAVIOR
-    const move_stop_conditions = [
-      (
-        ball_trajectory < 500 &&
-        Math.abs(this.x - 665) < 20
-      ),
-      (
-        !slime_jumping &&
-        ball_trajectory >= 500 &&
-        slime_in_range_of_trajectory
-      ),
-      (
-        slime_jumping &&
-        ball_trajectory >= 500 &&
-        Math.abs(this.x - options.ball.x) < hitbox
-      ),
-      (
-        slime_jumping &&
-        ball_trajectory >= 500 &&
-        this.x < options.ball.x
-      ),
-    ]
-
-    if(move_stop_conditions.includes(true)){
-      this.slimeStop();
-      return;
-    }
-
-    // MOVE LEFT BEHAVIOR
-    const move_left_conditions = [
-      (
-        ball_trajectory < 500 &&
-        this.x > 665
-      ),
-      (
-        !slime_jumping &&
-        ball_trajectory >= 500 &&
-        this.x > ball_trajectory + hitbox
-      ),
-      (
-        slime_jumping &&
-        ball_trajectory >= 500 &&
-        this.x > options.ball.x
-      ),
-    ]
-
-    if(move_left_conditions.includes(true)){
-      this.slimeMoveLeft();
-      return;
-    }
-
-
-    // MOVE RIGHT BEHAVIOR
-    const move_right_conditions = [
-      (
-        ball_trajectory < 500
-      ),
-      (
-        !slime_jumping &&
-        ball_trajectory >= 500 &&
-        this.x < ball_trajectory + hitbox
-      ),
-    ]
-
-    if(move_right_conditions.includes(true)){
-      this.slimeMoveRight();
-      return;
-    }
-
-
-
-
-
-
   }
-  slimeServe(options){
-    if(options.ball.x !== this.start_x) return false
+  serve(options){
     const jump_direction = Math.random() < 0.50 ? 'left' : 'right';
     if(this.y === 0 && jump_direction === 'right' && options.ball.y < 300){
       this.slimeJump();
@@ -149,6 +116,5 @@ class PatheticWhiteSlime extends SlimeAI {
       this.slimeJump();
       this.slimeMoveLeft();
     }
-    return true;
   }
 }

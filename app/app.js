@@ -23,6 +23,46 @@ function setTheme(name){
 
 async function init(){
 
+  let debug_ball = false;
+  document.addEventListener('keydown', e => {
+    if(e.code === 'Space'){
+      game.setPaused( !game.isPaused() );
+      if(!game.isPaused()) {
+        debug_ball = false;
+        game.start_game()
+      }
+    } else if(game.isPaused()){
+      if(e.code === 'Enter'){
+        debug_ball = false;
+        slime_player.slimeStop()
+        game.start_game()
+      }
+      if(e.code === 'KeyB'){
+        debug_ball = true;
+      }
+      if(e.code === 'ArrowLeft'){
+        slime_player.slimeStop()
+        slime_player.slimeMoveLeft()
+        game.start_game()
+      }
+      if(e.code === 'ArrowRight'){
+        slime_player.slimeStop()
+        slime_player.slimeMoveRight()
+        game.start_game()
+      }
+      if(e.code === 'ArrowUp'){
+        slime_player.slimeStop()
+        slime_player.slimeJump()
+        game.start_game()
+      }
+      if(e.code === 'ArrowDown'){
+        inputs.down = true;
+        game.start_game()
+      }
+    }
+
+  });
+
   document.getElementById('toggle-audio').addEventListener('click',function(event){
 
     if(this.classList.contains('off')){
@@ -73,9 +113,10 @@ async function init(){
     },
     start_game: async (time) => {
 
-      if( game.isPaused() ){
+      if( game.isWaiting() ){
         return;
       }
+
       if( online.ready() ){
         document.getElementById('room-input').classList.add('hide');
         document.getElementById('chat-input').classList.remove('hide');
@@ -86,15 +127,21 @@ async function init(){
           slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
         }
       } else {
-        slime_player.setSlimeMovement({ inputs: inputs.getClient() });
-        slime_opponent.setSlimeMovement({ ball: ball, slime: slime_player });
+        if(!game.isPaused()){
+          slime_player.setSlimeMovement({ inputs: inputs.getClient() });
+        }
+        slime_opponent.setSlimeMovement({ debug: game.isPaused(), ball: ball, slime: slime_player });
       }
+
 
       await slime_player.setSlime();
       await slime_opponent.setSlime();
       await water.splashSlime(slime_player);
       await water.splashSlime(slime_opponent);
-      await ball.setBall();
+
+      if(!debug_ball){
+        await ball.setBall();
+      }
       await ball.hitSlime(slime_player);
       await ball.hitSlime(slime_opponent);
       await ball.hitWall();
@@ -113,7 +160,6 @@ async function init(){
           game.setRoundOver();
         }
       }
-
       await animate.game({
         ball: ball,
         slime_player: slime_player,
@@ -125,17 +171,18 @@ async function init(){
       });
 
 
-
-    var delta = Date.now();
-    var deltaTime = Date.now() - delta;
-    if (deltaTime >= framerate) {
-      //window.requestAnimationFrame(game.start_game);
-      //requestAnimationFrame(exampleThree);
-    } else {
-      setTimeout( () => {
-        window.requestAnimationFrame(game.start_game);
-      }, framerate - deltaTime);
-    }
+      var delta = Date.now();
+      var deltaTime = Date.now() - delta;
+      if (deltaTime >= framerate) {
+        //window.requestAnimationFrame(game.start_game);
+        //requestAnimationFrame(exampleThree);
+      } else {
+        setTimeout( () => {
+          if(!game.isPaused()){
+            window.requestAnimationFrame(game.start_game);
+          }
+        }, framerate - deltaTime);
+      }
 
 
     },

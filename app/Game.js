@@ -9,8 +9,9 @@ class Game {
     this.player_to_serve = true;
     this.states = {
       active: 1,
-      pause: 2,
+      wait: 2,
       end: 3,
+      pause: 4,
     }
     this.state = 1;
     this.interval = null;
@@ -19,16 +20,8 @@ class Game {
 
   }
   async start(){
-
-
-    //var frameRate = 1000/60;
-    //var lastFrame = 0;
-    //var startTime;
-
-    //this.resetGameInterval();
     await this.setup_round();
     window.requestAnimationFrame(this.start_game);
-    //this.start_game();
   }
   getScore(){
     return this.score;
@@ -37,13 +30,13 @@ class Game {
     return this.score.player == this.score.max;
   }
   setRoundOver(options){
-    this.state = this.states.pause;
+    this.state = this.states.wait;
     setTimeout(() => {
       this.start()
     }, 400);
   }
   setGameOver(options){
-    this.state = this.states.pause;
+    this.state = this.states.wait;
     setTimeout(() => {
       this.resetGame();
       this.start()
@@ -71,6 +64,9 @@ class Game {
   }
   setPaused(val){
     this.states.pause = val;
+  }
+  isWaiting(){
+    return this.state == this.states.wait;
   }
   isPaused(){
     return this.state == this.states.pause;

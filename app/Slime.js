@@ -1,5 +1,6 @@
 class Slime {
   constructor(options) {
+    this.debug = false;
     this.is_player = options.is_player;
     this.x = options.x;
     this.y = 0;
