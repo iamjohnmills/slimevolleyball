@@ -1,11 +1,11 @@
 class Slime {
   constructor(options) {
-    this.debug = false;
     this.is_player = options.is_player;
     this.x = options.x;
     this.y = 0;
     this.xv = 0;
     this.yv = 0;
+    this.to_serve = options.to_serve;
     this.do_slime_dunk = false;
     this.color = options.color
     this.radius = options.radius;
@@ -20,6 +20,9 @@ class Slime {
       location: options.chat.location,
       message: options.chat.message,
     }
+  }
+  setToServe(val){
+    this.to_serve = val;
   }
   resetSlime(){
     this.x = this.start_x;
@@ -67,8 +70,10 @@ class Slime {
   slimeMoveRight(v = 8){
     this.xv = v
   }
-  slimeJump(){
-    this.yv = 31;
+  slimeJump(chance=null){
+    if (!chance || Math.random() <= chance) {
+      this.yv = 31;
+    }
   }
   slimeStop(){
     this.xv = 0

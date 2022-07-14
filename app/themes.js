@@ -75,20 +75,20 @@ export default {
     },
     slime_opponent: {
       body: {
-        fill: '#FFFFFF',
+        fill: '#6C2023',
         stroke: {
-          color: 'transparent',
+          color: '#6C2023',
           width: 0
         }
       },
       eye: {
         fill: '#FFFFFF',
         stroke: {
-          color: 'transparent',
+          color: '#6C2023',
           width: 0
         }
       },
-      pupil: '#000'
+      pupil: '#6C2023'
     }
   },
   sewer: {

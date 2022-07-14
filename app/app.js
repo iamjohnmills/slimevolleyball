@@ -23,44 +23,13 @@ function setTheme(name){
 
 async function init(){
 
-  let debug_ball = false;
   document.addEventListener('keydown', e => {
-    if(e.code === 'Space'){
+    if(e.code === 'Enter'){
       game.setPaused( !game.isPaused() );
-      if(!game.isPaused()) {
-        debug_ball = false;
-        game.start_game()
-      }
+      if(!game.isPaused()) game.start_game()
     } else if(game.isPaused()){
-      if(e.code === 'Enter'){
-        debug_ball = false;
-        slime_player.slimeStop()
-        game.start_game()
-      }
-      if(e.code === 'KeyB'){
-        debug_ball = true;
-      }
-      if(e.code === 'ArrowLeft'){
-        slime_player.slimeStop()
-        slime_player.slimeMoveLeft()
-        game.start_game()
-      }
-      if(e.code === 'ArrowRight'){
-        slime_player.slimeStop()
-        slime_player.slimeMoveRight()
-        game.start_game()
-      }
-      if(e.code === 'ArrowUp'){
-        slime_player.slimeStop()
-        slime_player.slimeJump()
-        game.start_game()
-      }
-      if(e.code === 'ArrowDown'){
-        inputs.down = true;
-        game.start_game()
-      }
+      if(e.code === 'Space') game.start_game()
     }
-
   });
 
   document.getElementById('toggle-audio').addEventListener('click',function(event){
@@ -100,13 +69,14 @@ async function init(){
 
   game = new Game({
     setup_round: () => {
-      slime_player = new SlimePlayer({ x: 202, is_player: true, eye_location: 'right', chat: { location: 'left' }, radius: 100, left: 50, right: 445 });
+      const player_serves = game.playerServes();
+      slime_player = new SlimePlayer({ to_serve: player_serves, x: 202, is_player: true, eye_location: 'right', chat: { location: 'left' }, radius: 100, left: 50, right: 445 });
       if( online.ready() ){
         slime_opponent = new SlimePlayer({ x: 800, is_player: false, color: 'Yellow', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
       } else {
-        slime_opponent = new PatheticWhiteSlime({ x: 800, is_player: false, eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
+        slime_opponent = new SlimeAI({ variant: 'PatheticWhiteSlime', to_serve: !player_serves, x: 800, is_player: false, eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
       }
-      ball.resetBall(game.getWhoServes());
+      ball.resetBall(player_serves);
       slime_player.resetSlime();
       slime_opponent.resetSlime();
       game.setStateActive();
@@ -115,6 +85,9 @@ async function init(){
 
       if( game.isWaiting() ){
         return;
+      } else if(game.isPaused()){
+        ball.log();
+        slime_opponent.log();
       }
 
       if( online.ready() ){
@@ -127,10 +100,8 @@ async function init(){
           slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
         }
       } else {
-        if(!game.isPaused()){
-          slime_player.setSlimeMovement({ inputs: inputs.getClient() });
-        }
-        slime_opponent.setSlimeMovement({ debug: game.isPaused(), ball: ball, slime: slime_player });
+        slime_player.setSlimeMovement({ inputs: inputs.getClient() });
+        slime_opponent.setSlimeMovement({ ball: ball, slime: slime_player });
       }
 
 
@@ -138,19 +109,20 @@ async function init(){
       await slime_opponent.setSlime();
       await water.splashSlime(slime_player);
       await water.splashSlime(slime_opponent);
-
-      if(!debug_ball){
-        await ball.setBall();
-      }
+      await ball.setBall();
       await ball.hitSlime(slime_player);
       await ball.hitSlime(slime_opponent);
       await ball.hitWall();
       await ball.hitNet();
       if(ball.hitFloor()){
         if(ball.x < 500){
+          slime_player.setToServe(false);
+          slime_opponent.setToServe(true);
           slime_player.setSlimeChat({ message: 'AHHH!', delay: 400 });
           game.setPointOpponent();
         } else if(ball.x > 500){
+          slime_player.setToServe(true);
+          slime_opponent.setToServe(false);
           slime_opponent.setSlimeChat({ message: 'AHHH!', delay: 400 });
           game.setPointPlayer();
         }

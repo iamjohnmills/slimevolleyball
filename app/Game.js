@@ -59,7 +59,7 @@ class Game {
       this.state = this.states.end;
     }
   }
-  getWhoServes(){
+  playerServes(){
     return this.player_to_serve;
   }
   setPaused(val){

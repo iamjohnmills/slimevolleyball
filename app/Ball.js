@@ -9,6 +9,8 @@ class Ball {
     this.gravity = 1; // 1
     this.color = 'Yellow';
     this.radius = 30;
+    this.trajectory_y_limit = 125;
+    this.trajectory = null;
     this.bounds = {
       collision_padding: 5,
       net_left: 482,
@@ -25,6 +27,12 @@ class Ball {
       x: 800,
       y: 50
     };
+  }
+  log(){
+    console.log('ball trajectory x: ' + this.trajectory);
+    console.log('ball x,y: ' + this.x + ',' + this.y);
+    console.log('ball xv,yv: ' + this.xv + ',' + this.yv );
+    console.log('-----------------------------------------');
   }
   getPosition(){
     return {
@@ -67,6 +75,7 @@ class Ball {
     }
     this.x += this.xv;
     this.y += this.yv;
+    this.trajectory = this.getBallTrajectoryX();
   }
   hitFloor(){
     if(this.y < 0) {
@@ -117,6 +126,29 @@ class Ball {
         if( this.yv < -this.yv_max) this.yv = -this.yv_max;
         else if(this.yv > this.yv_max) this.yv = this.yv_max;
       }
+    }
+  }
+  getBallTrajectoryX(){  // calculate ending ball x given a starting y
+    var frames = this.getFramesUntilLimit(this.y, this.yv, this.trajectory_y_limit);
+    var x = this.x;
+    var xv = this.xv;
+    for(var i = 0; i < frames; i++) {
+      x += xv;
+      if(x < 0) {
+        x = 0;
+        xv = -xv;
+      } else if(x > 1000) {
+        x = 1000;
+        xv = -xv;
+      }
+    }
+    return x;
+  }
+  getFramesUntilLimit(y,vy,limit){ // given y and yv, calculate count of times before reaches a limit by decremeting
+    for(var count = 0; 1; count++) {
+      vy--;
+      y += vy;
+      if(y <= limit) return count;
     }
   }
 }
