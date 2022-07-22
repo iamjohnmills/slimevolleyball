@@ -2,7 +2,7 @@ class SlimeAI extends Slime {
   constructor(...options){
     super(...options);
     this.show_logs = false;
-    this.variant = options.variant;
+    this.variant = options[0].variant;
 
     this.serves = [
       { name: 'back_wall_and_near_jump', phase_count: 7 },
@@ -11,34 +11,33 @@ class SlimeAI extends Slime {
       { name: 'basic', phase_count: 3 },
     ];
 
-    this.current_serve = this.getServe();
-
+    this.current_serve = this.getServe(options[0].previous_serve);
   }
-  getServe(index=Math.floor(Math.random()*this.serves.length)){
-    let serve = this.serves[index];
+  log(){
+    this.show_logs = true;
+  }
+  // setServe(to_serve){
+  //   if(to_serve){
+  //     this.current_serve = this.getServe();
+  //   }
+  // }
+  getServe(previous_serve){
+    const available_serves = previous_serve ? this.serves.filter(serve => serve.name !== previous_serve) : this.serves;
+    const serve = available_serves[Math.floor(Math.random()*available_serves.length)];
     return {
       ...serve,
       phases: new Array(serve.phase_count).fill(false),
     }
   }
-  log(){
-    this.show_logs = true;
+  getCurrentServeName(){
+    return this.current_serve.name
   }
   setSlimeMovement(options){
+
+    if(this.current_serve.phases.includes(false) && this.to_serve) return this.serve(options)
+
     const hitbox = this.y > 0 ? 0 : 5;
     const slime_in_range = Math.abs(this.x - options.ball.trajectory) < hitbox;
-
-    const is_serving = this.to_serve && this.current_serve.phases.includes(false);
-
-    if(this.show_logs){
-      console.log('slime ai in range: ' + slime_in_range);
-      console.log('slime ai x,y: ' + this.x + ',' + this.y);
-      console.log('slime ai xv,yv: ' + this.xv + ',' + this.yv );
-      console.log('slime ai serve phases: ' + this.serve_phases );
-      console.log('-----------------------------------------');
-    }
-
-    if(is_serving) return this.serve(options);
 
     const jump = Array.from([
       this.x <= 580 && options.ball.x < 530 && Math.abs(this.x - options.ball.x) < 100,
@@ -68,17 +67,25 @@ class SlimeAI extends Slime {
     ]).some(rule => rule);
     if(move_right) return this.slimeMoveRight();
 
+    // if(this.show_logs){
+    //   console.log('slime ai in range: ' + slime_in_range);
+    //   console.log('slime ai x,y: ' + this.x + ',' + this.y);
+    //   console.log('slime ai xv,yv: ' + this.xv + ',' + this.yv );
+    //   console.log('-----------------------------------------');
+    // }
+
+
   }
-  serve(options){
 
-    if(!this.current_serve.phases.includes(false)) {
-      let random_serve = this.getServe();
-      while(random_serve.name === this.current_serve.name){
-        random_serve = this.getServe();
-      }
-      this.current_serve = random_serve;
-    }
+  async serve(options){
 
+    // if(!this.current_serve.phases.includes(false)) {
+    //   let random_serve = this.getServe();
+    //   while(random_serve.name === this.current_serve.name){
+    //     random_serve = this.getServe();
+    //   }
+    //   this.current_serve = random_serve;
+    // }
 
     if(this.current_serve.name === 'basic'){
       this.current_serve.jump_direction = !this.current_serve.jump_direction ? Math.random() < 0.50 ? 'left' : 'right' : this.current_serve.jump_direction;
@@ -96,7 +103,6 @@ class SlimeAI extends Slime {
         this.current_serve.phases[2] = options.ball.x < 550;
       }
     }
-
 
     if(this.current_serve.name === 'back_wall_net_skip'){
       if(!this.current_serve.phases[0]){
@@ -142,9 +148,6 @@ class SlimeAI extends Slime {
         this.current_serve.phases[6] = options.ball.x <= 550;
       }
     }
-
-
-
 
     if(this.current_serve.name === 'low_net_skip'){
       this.current_serve.ball_y_logic = !this.current_serve.ball_y_logic ? Math.random() <= 0.66 ? 262 : 300 : this.current_serve.ball_y_logic;

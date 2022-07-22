@@ -13,6 +13,7 @@ class Game {
       end: 3,
       pause: 4,
     }
+    // this.opponent_serve_sequence = null;
     this.state = 1;
     this.interval = null;
     this.setup_round = options.setup_round;
@@ -23,6 +24,12 @@ class Game {
     await this.setup_round();
     window.requestAnimationFrame(this.start_game);
   }
+  // setOpponentServeSequence(name){
+  //   this.opponent_serve_sequence = name;
+  // }
+  // getOpponentServeSequence(name){
+  //   return this.opponent_serve_sequence;
+  // }
   getScore(){
     return this.score;
   }

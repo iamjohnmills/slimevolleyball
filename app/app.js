@@ -74,7 +74,8 @@ async function init(){
       if( online.ready() ){
         slime_opponent = new SlimePlayer({ x: 800, is_player: false, color: 'Yellow', eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
       } else {
-        slime_opponent = new SlimeAI({ variant: 'PatheticWhiteSlime', to_serve: !player_serves, x: 800, is_player: false, eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
+        const previous_serve = slime_opponent ? slime_opponent.getCurrentServeName() : null;
+        slime_opponent = new SlimeAI({ variant: 'PatheticWhiteSlime', previous_serve: previous_serve, to_serve: !player_serves, x: 800, is_player: false, eye_location: 'left', chat: { location: 'right' }, radius: 100, left: 555, right: 950 });
       }
       ball.resetBall(player_serves);
       slime_player.resetSlime();
@@ -100,10 +101,9 @@ async function init(){
           slime_opponent.setSlimeMovement({ inputs: inputs.getClient() });
         }
       } else {
-        slime_player.setSlimeMovement({ inputs: inputs.getClient() });
-        slime_opponent.setSlimeMovement({ ball: ball, slime: slime_player });
+        await slime_player.setSlimeMovement({ inputs: inputs.getClient() });
+        await slime_opponent.setSlimeMovement({ ball: ball, slime: slime_player });
       }
-
 
       await slime_player.setSlime();
       await slime_opponent.setSlime();
@@ -116,20 +116,20 @@ async function init(){
       await ball.hitNet();
       if(ball.hitFloor()){
         if(ball.x < 500){
-          slime_player.setToServe(false);
-          slime_opponent.setToServe(true);
-          slime_player.setSlimeChat({ message: 'AHHH!', delay: 400 });
-          game.setPointOpponent();
+          // await slime_player.setToServe(false);
+          // await slime_opponent.setToServe(true);
+          await slime_player.setSlimeChat({ message: 'AHHH!', delay: 400 });
+          await game.setPointOpponent();
         } else if(ball.x > 500){
-          slime_player.setToServe(true);
-          slime_opponent.setToServe(false);
-          slime_opponent.setSlimeChat({ message: 'AHHH!', delay: 400 });
-          game.setPointPlayer();
+          // await slime_player.setToServe(true);
+          // await slime_opponent.setToServe(false);
+          await slime_opponent.setSlimeChat({ message: 'AHHH!', delay: 400 });
+          await game.setPointPlayer();
         }
         if( game.getGameEnd() ){
-          game.setGameOver();
+          await game.setGameOver();
         } else {
-          game.setRoundOver();
+          await game.setRoundOver();
         }
       }
       await animate.game({
