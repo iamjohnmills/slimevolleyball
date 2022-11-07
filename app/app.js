@@ -23,14 +23,14 @@ function setTheme(name){
 
 async function init(){
 
-  document.addEventListener('keydown', e => {
-    if(e.code === 'Enter'){
-      game.setPaused( !game.isPaused() );
-      if(!game.isPaused()) game.start_game()
-    } else if(game.isPaused()){
-      if(e.code === 'Space') game.start_game()
-    }
-  });
+  // document.addEventListener('keydown', e => {
+  //   if(e.code === 'Enter'){
+  //     game.setPaused( !game.isPaused() );
+  //     if(!game.isPaused()) game.start_game()
+  //   } else if(game.isPaused()){
+  //     if(e.code === 'Space') game.start_game()
+  //   }
+  // });
 
   document.getElementById('toggle-audio').addEventListener('click',function(event){
 
