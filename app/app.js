@@ -64,7 +64,7 @@ async function init(){
   water = new Water();
 
 
-  var framerate = 17;
+  // var framerate = 17;
 
 
   game = new Game({
@@ -143,18 +143,18 @@ async function init(){
       });
 
 
-      var delta = Date.now();
-      var deltaTime = Date.now() - delta;
-      if (deltaTime >= framerate) {
+      // var delta = Date.now();
+      // var deltaTime = Date.now() - delta;
+      // if (deltaTime >= framerate) {
         //window.requestAnimationFrame(game.start_game);
         //requestAnimationFrame(exampleThree);
-      } else {
-        setTimeout( () => {
-          if(!game.isPaused()){
+      // } else {
+        // setTimeout( () => {
+          // if(!game.isPaused()){
             window.requestAnimationFrame(game.start_game);
-          }
-        }, framerate - deltaTime);
-      }
+          // }
+        // }, framerate - deltaTime);
+      // }
 
 
     },
