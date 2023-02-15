@@ -14,14 +14,14 @@ class Game {
     }
     // this.opponent_serve_sequence = null;
     this.state = 1;
-    this.interval = null;
+    // this.interval = null;
     this.setup_round = options.setup_round;
-    this.start_game = options.start_game;
-    // this.interval = setInterval(this.start_game, 20);
+    // this.start_game = options.start_game;
+    this.interval = setInterval(options.start_game, 20);
   }
   async start(){
     await this.setup_round();
-    this.start_game();
+    // this.start_game();
     // window.requestAnimationFrame(this.start_game);
   }
   // setOpponentServeSequence(name){

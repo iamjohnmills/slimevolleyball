@@ -64,8 +64,9 @@ async function init(){
   water = new Water();
 
 
-  // var framerate = 17;
+  // var framerate = 15;
 
+  // let frame_timeout = null;
 
   game = new Game({
     setup_round: () => {
@@ -83,6 +84,8 @@ async function init(){
       game.setStateActive();
     },
     start_game: async (time) => {
+
+      // if(frame_timeout) clearTimeout(frame_timeout);
 
       if( game.isWaiting() ){
         return;
@@ -136,7 +139,7 @@ async function init(){
         ball: ball,
         slime_player: slime_player,
         slime_opponent: slime_opponent,
-        score: game.getScore(),
+        score: await game.getScore(),
         water: {
           particles: await water.getParticles()
         }
@@ -146,16 +149,15 @@ async function init(){
       // var delta = Date.now();
       // var deltaTime = Date.now() - delta;
       // if (deltaTime >= framerate) {
-        //window.requestAnimationFrame(game.start_game);
-        //requestAnimationFrame(exampleThree);
+      //   window.requestAnimationFrame(game.start_game);
       // } else {
-        // setTimeout( () => {
-          // if(!game.isPaused()){
-            // window.requestAnimationFrame(game.start_game);
-          // }
-        // }, framerate - deltaTime);
+      //   setTimeout( () => {
+      //     if(!game.isPaused()){
+      //       window.requestAnimationFrame(game.start_game);
+      //     }
+      //   }, framerate - deltaTime);
       // }
-      setTimeout(game.start_game,15)
+      // frame_timeout = setTimeout(game.start_game,15)
 
 
     },
