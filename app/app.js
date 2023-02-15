@@ -151,7 +151,7 @@ async function init(){
       // } else {
         // setTimeout( () => {
           // if(!game.isPaused()){
-            window.requestAnimationFrame(game.start_game);
+            // window.requestAnimationFrame(game.start_game);
           // }
         // }, framerate - deltaTime);
       // }
