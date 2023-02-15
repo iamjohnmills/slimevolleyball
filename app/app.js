@@ -155,7 +155,7 @@ async function init(){
           // }
         // }, framerate - deltaTime);
       // }
-      setTimeout(game.start_game,16)
+      setTimeout(game.start_game,15)
 
 
     },
