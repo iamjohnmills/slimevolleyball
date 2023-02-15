@@ -1,4 +1,3 @@
-
 class Game {
   constructor(options) {
     this.score = {
@@ -18,7 +17,6 @@ class Game {
     this.interval = null;
     this.setup_round = options.setup_round;
     this.start_game = options.start_game;
-
   }
   async start(){
     await this.setup_round();

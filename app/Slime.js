@@ -47,7 +47,6 @@ class Slime {
       this.yv = 0;
     }
     */
-
     this.yv -= 2;
     this.y += this.yv;
     if(this.do_slime_dunk) {
@@ -62,7 +61,6 @@ class Slime {
         this.yv = 0;
       }
     }
-
   }
   slimeMoveLeft(v = 8){
     this.xv = -v
@@ -84,6 +82,5 @@ class Slime {
     setTimeout(function(){
       this.chat.show = false;
     }.bind(this),options.delay)
-
   }
 }

@@ -176,6 +176,5 @@ class SlimeAI extends Slime {
         this.current_serve.phases[7] = this.y === 0;
       }
     }
-
   }
 }
